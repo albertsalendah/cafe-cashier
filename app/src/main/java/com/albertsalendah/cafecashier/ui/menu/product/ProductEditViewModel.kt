@@ -9,6 +9,7 @@ import com.albertsalendah.cafecashier.data.db.Category
 import com.albertsalendah.cafecashier.data.db.CategoryDao
 import com.albertsalendah.cafecashier.data.db.Product
 import com.albertsalendah.cafecashier.data.db.ProductDao
+import com.albertsalendah.cafecashier.ui.todayEpochDay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -19,6 +20,9 @@ sealed interface DiscountDateWarning {
     data object NoDates : DiscountDateWarning
     data class NoEndDate(val startDay: Long) : DiscountDateWarning
     data class NoStartDate(val endDay: Long) : DiscountDateWarning
+
+    // The end date is already behind us, so the discount would never apply to any sale.
+    data class EndInPast(val endDay: Long) : DiscountDateWarning
 }
 
 // productId == null means a new product. Built with its own factory in ProductEditScreen
@@ -75,13 +79,25 @@ class ProductEditViewModel(
             return discountPercent > 0 && start != null && end != null && end < start
         }
 
-    // Non-null when a discount would be saved with a missing start and/or end date. The screen
-    // asks the user to confirm before saving in that case.
+    // Non-null when the discount would be saved with an end date in the past, or with a missing start
+    // and/or end date. The screen asks the user to confirm before saving in that case.
+    // An existing discount that was not changed in this edit is not asked about again (renaming a
+    // product must not re-ask about its old discount).
     val dateWarning: DiscountDateWarning?
         get() {
-            if (discountPercent <= 0) return null
+            val percent = discountPercent
+            if (percent <= 0) return null
             val start = discountStartDay
             val end = discountEndDay
+            val saved = original
+            if (saved != null &&
+                saved.discountPercent == percent &&
+                saved.discountStartDay == start &&
+                saved.discountEndDay == end
+            ) return null
+
+            // Most serious first: a discount that can never apply.
+            if (end != null && end < todayEpochDay()) return DiscountDateWarning.EndInPast(end)
             return when {
                 start != null && end != null -> null
                 start != null -> DiscountDateWarning.NoEndDate(start)

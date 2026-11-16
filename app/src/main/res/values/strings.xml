@@ -59,4 +59,13 @@
     <string name="discount_confirm_question">Do you want to save it like this?</string>
     <string name="save_anyway">Save anyway</string>
     <string name="go_back">Go back</string>
+    <string name="discount_warn_end_past">The end date %1$s has already passed. This discount %2$s.</string>
+    <string name="discount_hl_never_applies">will not apply to any sale</string>
+
+    <!-- Discount status shown in the product list and the product form. -->
+    <string name="discount_status_scheduled">Discount %1$d%% starts %2$s</string>
+    <string name="discount_ends_today">%1$d%% off · ends today</string>
+    <string name="discount_ends_tomorrow">%1$d%% off · ends tomorrow</string>
+    <string name="discount_ends_in_days">%1$d%% off · ends in %2$d days</string>
+    <string name="discount_status_expired">Discount expired %1$s</string>
 </resources>

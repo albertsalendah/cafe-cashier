@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,11 +50,13 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.albertsalendah.cafecashier.CafeCashierApp
 import com.albertsalendah.cafecashier.R
+import com.albertsalendah.cafecashier.domain.discountStatus
 import com.albertsalendah.cafecashier.ui.components.ExpandableText
 import com.albertsalendah.cafecashier.ui.components.ThousandsVisualTransformation
 import com.albertsalendah.cafecashier.ui.epochDayToPickerMillis
 import com.albertsalendah.cafecashier.ui.formatEpochDay
 import com.albertsalendah.cafecashier.ui.pickerMillisToEpochDay
+import com.albertsalendah.cafecashier.ui.todayEpochDay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,6 +85,7 @@ fun ProductEditScreen(
     var showDateConfirm by rememberSaveable { mutableStateOf(false) }
     // Which date picker is open: "start", "end" or none.
     var pickerFor by rememberSaveable { mutableStateOf<String?>(null) }
+    val today = remember { todayEpochDay() }
 
     // The product was removed from under us: nothing to edit, so close.
     LaunchedEffect(viewModel.missing) {
@@ -209,6 +213,22 @@ fun ProductEditScreen(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.error
                         )
+                    } else {
+                        // Where this discount stands today: grey, green, orange or red, with words.
+                        val status = discountStatus(
+                            viewModel.discountPercent,
+                            viewModel.discountStartDay,
+                            viewModel.discountEndDay,
+                            today
+                        )
+                        discountLabel(status, viewModel.discountPercent)?.let { label ->
+                            Text(
+                                text = label.text,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = label.color
+                            )
+                        }
                     }
                 }
 
@@ -380,6 +400,15 @@ private fun discountWarningText(warning: DiscountDateWarning): AnnotatedString {
             highlighted(
                 stringResource(R.string.discount_warn_no_start, now, date),
                 listOf(now, date), question, color
+            )
+        }
+
+        is DiscountDateWarning.EndInPast -> {
+            val date = formatEpochDay(warning.endDay)
+            val never = stringResource(R.string.discount_hl_never_applies)
+            highlighted(
+                stringResource(R.string.discount_warn_end_past, date, never),
+                listOf(date, never), question, color
             )
         }
     }

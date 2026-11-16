@@ -27,11 +27,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.albertsalendah.cafecashier.R
-import com.albertsalendah.cafecashier.domain.effectiveDiscountPercent
+import com.albertsalendah.cafecashier.domain.discountStatus
 import com.albertsalendah.cafecashier.ui.appViewModelFactory
 import com.albertsalendah.cafecashier.ui.components.ShowHiddenRow
 import com.albertsalendah.cafecashier.ui.formatRupiah
@@ -117,19 +121,24 @@ fun ProductListScreen(
                             ListItem(
                                 headlineContent = { Text(product.name) },
                                 supportingContent = {
-                                    // Same rule the checkout uses, so the list shows what customers get today.
-                                    val percent = effectiveDiscountPercent(
+                                    // Status uses the same window rule as the checkout, so "green" here
+                                    // means customers really get the discount today.
+                                    val status = discountStatus(
                                         product.discountPercent,
                                         product.discountStartDay,
                                         product.discountEndDay,
                                         today
                                     )
+                                    val label = discountLabel(status, product.discountPercent)
                                     Text(
-                                        if (percent > 0) {
-                                            formatRupiah(product.price) + " · " +
-                                                stringResource(R.string.discount_off, percent)
-                                        } else {
-                                            formatRupiah(product.price)
+                                        buildAnnotatedString {
+                                            append(formatRupiah(product.price))
+                                            if (label != null) {
+                                                append(" · ")
+                                                withStyle(SpanStyle(color = label.color, fontWeight = FontWeight.Medium)) {
+                                                    append(label.text)
+                                                }
+                                            }
                                         }
                                     )
                                 },
