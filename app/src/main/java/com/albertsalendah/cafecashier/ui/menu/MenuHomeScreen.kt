@@ -17,16 +17,21 @@ import com.albertsalendah.cafecashier.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuHomeScreen(onOpenCategories: () -> Unit) {
+fun MenuHomeScreen(onOpenCategories: () -> Unit, onOpenProducts: () -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBar(title = { Text(stringResource(R.string.menu_title)) }) }
     ) { innerPadding ->
-        // One row per menu area. Products, add-ons and discounts get their rows in later steps.
+        // One row per menu area. Add-ons and discounts get their rows in later steps.
         Column(modifier = Modifier.padding(innerPadding)) {
             ListItem(
                 headlineContent = { Text(stringResource(R.string.categories)) },
                 modifier = Modifier.clickable(onClick = onOpenCategories)
+            )
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.products)) },
+                modifier = Modifier.clickable(onClick = onOpenProducts)
             )
             HorizontalDivider()
         }

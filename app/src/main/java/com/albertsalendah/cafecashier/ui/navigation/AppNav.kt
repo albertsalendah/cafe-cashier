@@ -8,6 +8,8 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.albertsalendah.cafecashier.ui.menu.MenuHomeScreen
 import com.albertsalendah.cafecashier.ui.menu.category.CategoryListScreen
+import com.albertsalendah.cafecashier.ui.menu.product.ProductEditScreen
+import com.albertsalendah.cafecashier.ui.menu.product.ProductListScreen
 
 @Composable
 fun AppNav() {
@@ -23,10 +25,26 @@ fun AppNav() {
         ),
         entryProvider = entryProvider {
             entry<MenuHome> {
-                MenuHomeScreen(onOpenCategories = { backStack.add(CategoryList) })
+                MenuHomeScreen(
+                    onOpenCategories = { backStack.add(CategoryList) },
+                    onOpenProducts = { backStack.add(ProductList) }
+                )
             }
             entry<CategoryList> {
                 CategoryListScreen()
+            }
+            entry<ProductList> {
+                ProductListScreen(
+                    onAddProduct = { categoryId -> backStack.add(ProductEdit(categoryId = categoryId)) },
+                    onEditProduct = { productId -> backStack.add(ProductEdit(productId = productId)) }
+                )
+            }
+            entry<ProductEdit> { key ->
+                ProductEditScreen(
+                    productId = key.productId,
+                    initialCategoryId = key.categoryId,
+                    onDone = { backStack.removeLastOrNull() }
+                )
             }
         }
     )

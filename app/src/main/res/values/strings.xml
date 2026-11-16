@@ -1,15 +1,31 @@
 <resources>
     <string name="app_name">Cafe Cashier</string>
     <string name="menu_title">Menu</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Hiding (archiving) an item. Shared by categories and products. -->
+    <string name="hide_from_menu">Hide from menu</string>
+    <string name="hide">Hide</string>
+    <string name="hide_item_title">Hide \"%1$s\"?</string>
+    <string name="hide_helper">Hidden items no longer show in the menu or when taking orders. Past sales are not affected.</string>
+
+    <!-- Categories -->
     <string name="categories">Categories</string>
     <string name="categories_empty">No categories yet</string>
     <string name="add_category">Add category</string>
     <string name="rename_category">Edit category</string>
     <string name="category_name">Category name</string>
-    <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
-    <string name="archive">Archive</string>
-    <string name="archive_category_title">Archive \"%1$s\"?</string>
-    <string name="archive_category_message">It will be hidden from the menu.</string>
-    <string name="category_archive_blocked">This category still has active products. Archive or move them first.</string>
+    <string name="category_archive_blocked">This category still has active products. Hide or move them first.</string>
+
+    <!-- Products -->
+    <string name="products">Products</string>
+    <string name="products_empty">No products in this category yet</string>
+    <string name="add_product">Add product</string>
+    <string name="new_product">New product</string>
+    <string name="edit_product">Edit product</string>
+    <string name="product_name">Product name</string>
+    <string name="price">Price</string>
+    <string name="category_label">Category</string>
+    <string name="add_category_first">Add a category first, then add products.</string>
 </resources>

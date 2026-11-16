@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -48,7 +49,7 @@ fun CategoryListScreen() {
     // Which dialog is open. Ids (not objects) so the state survives rotation.
     var showAdd by rememberSaveable { mutableStateOf(false) }
     var editingId by rememberSaveable { mutableStateOf<Long?>(null) }
-    var archivingId by rememberSaveable { mutableStateOf<Long?>(null) }
+    var hidingId by rememberSaveable { mutableStateOf<Long?>(null) }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val blockedText = stringResource(R.string.category_archive_blocked)
@@ -122,39 +123,40 @@ fun CategoryListScreen() {
                 editingId = null
             },
             onDismiss = { editingId = null },
-            onArchive = {
+            onHide = {
                 editingId = null
-                archivingId = category.id
+                hidingId = category.id
             }
         )
     }
 
-    list?.firstOrNull { it.id == archivingId }?.let { category ->
+    list?.firstOrNull { it.id == hidingId }?.let { category ->
         AlertDialog(
-            onDismissRequest = { archivingId = null },
-            title = { Text(stringResource(R.string.archive_category_title, category.name)) },
-            text = { Text(stringResource(R.string.archive_category_message)) },
+            onDismissRequest = { hidingId = null },
+            title = { Text(stringResource(R.string.hide_item_title, category.name)) },
+            text = { Text(stringResource(R.string.hide_helper)) },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.archive(category)
-                    archivingId = null
-                }) { Text(stringResource(R.string.archive)) }
+                    hidingId = null
+                }) { Text(stringResource(R.string.hide)) }
             },
             dismissButton = {
-                TextButton(onClick = { archivingId = null }) { Text(stringResource(R.string.cancel)) }
+                TextButton(onClick = { hidingId = null }) { Text(stringResource(R.string.cancel)) }
             }
         )
     }
 }
 
-// One dialog for both add and rename. The Archive button shows only when onArchive is given (rename).
+// One dialog for both add and rename. The "Hide from menu" button and its helper line show only
+// when onHide is given (rename).
 @Composable
 private fun CategoryNameDialog(
     title: String,
     initialName: String,
     onSave: (String) -> Unit,
     onDismiss: () -> Unit,
-    onArchive: (() -> Unit)? = null
+    onHide: (() -> Unit)? = null
 ) {
     var name by rememberSaveable { mutableStateOf(initialName) }
 
@@ -169,8 +171,14 @@ private fun CategoryNameDialog(
                     singleLine = true,
                     label = { Text(stringResource(R.string.category_name)) }
                 )
-                if (onArchive != null) {
-                    TextButton(onClick = onArchive) { Text(stringResource(R.string.archive)) }
+                if (onHide != null) {
+                    TextButton(onClick = onHide) { Text(stringResource(R.string.hide_from_menu)) }
+                    Text(
+                        text = stringResource(R.string.hide_helper),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                    )
                 }
             }
         },
