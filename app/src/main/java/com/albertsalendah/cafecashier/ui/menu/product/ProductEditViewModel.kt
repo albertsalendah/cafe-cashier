@@ -1,10 +1,12 @@
 package com.albertsalendah.cafecashier.ui.menu.product
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.albertsalendah.cafecashier.data.ProductImageStore
 import com.albertsalendah.cafecashier.data.db.Category
 import com.albertsalendah.cafecashier.data.db.CategoryDao
 import com.albertsalendah.cafecashier.data.db.Product
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.File
 
 // What the "are you sure?" popup has to explain when a discount is saved with a missing date.
 sealed interface DiscountDateWarning {
@@ -31,7 +34,8 @@ class ProductEditViewModel(
     private val productDao: ProductDao,
     categoryDao: CategoryDao,
     private val productId: Long?,
-    initialCategoryId: Long?
+    initialCategoryId: Long?,
+    private val imageStore: ProductImageStore
 ) : ViewModel() {
 
     // null = still loading.
@@ -53,6 +57,21 @@ class ProductEditViewModel(
         private set
     var discountEndDay by mutableStateOf<Long?>(null)
         private set
+
+    // Photo (optional): the stored file name, null = no photo. It is either the product's saved
+    // photo or one copied in during this edit (listed in [imported]) that becomes permanent on Save.
+    var imageName by mutableStateOf<String?>(null)
+        private set
+    var importing by mutableStateOf(false)
+        private set
+    var photoFailed by mutableStateOf(false)
+        private set
+
+    val imageFile: File? get() = imageName?.let(imageStore::fileFor)
+
+    private var savedImageName: String? = null
+    private val imported = mutableSetOf<String>()
+    private var saved = false
 
     // False while an existing product is still being loaded from the database.
     var ready by mutableStateOf(productId == null)
@@ -107,7 +126,7 @@ class ProductEditViewModel(
         }
 
     val canSave: Boolean
-        get() = name.isNotBlank() && (price ?: 0L) > 0L && categoryId != null && !datesInvalid
+        get() = name.isNotBlank() && (price ?: 0L) > 0L && categoryId != null && !datesInvalid && !importing
 
     init {
         if (productId != null) {
@@ -120,6 +139,8 @@ class ProductEditViewModel(
                     name = product.name
                     priceText = product.price.toString()
                     categoryId = product.categoryId
+                    imageName = product.imagePath
+                    savedImageName = product.imagePath
                     if (product.discountPercent > 0) {
                         discountText = product.discountPercent.toString()
                         discountStartDay = product.discountStartDay
@@ -154,6 +175,45 @@ class ProductEditViewModel(
         }
     }
 
+    // Copies the picked photo into app storage (downscaled). Nothing is permanent until Save.
+    fun onPhotoPicked(uri: Uri) {
+        photoFailed = false
+        importing = true
+        viewModelScope.launch {
+            val name = imageStore.import(uri)
+            importing = false
+            if (name == null) {
+                photoFailed = true
+                return@launch
+            }
+            dropUnsavedPhoto() // replaces a photo picked earlier in this same edit
+            imported += name
+            imageName = name
+        }
+    }
+
+    fun onPhotoRemoved() {
+        photoFailed = false
+        dropUnsavedPhoto()
+        imageName = null
+    }
+
+    // Deletes the current photo only if it was copied in during this edit. The product's saved
+    // photo is kept until Save, so Cancel leaves it untouched.
+    private fun dropUnsavedPhoto() {
+        val current = imageName
+        if (current != null && current in imported) {
+            imageStore.delete(current)
+            imported -= current
+        }
+    }
+
+    // The form was left without saving (Cancel, back, or after hiding): throw away photos copied in
+    // during this edit.
+    override fun onCleared() {
+        if (!saved) imported.forEach(imageStore::delete)
+    }
+
     fun onDiscountStartChange(epochDay: Long?) {
         discountStartDay = epochDay
     }
@@ -183,7 +243,8 @@ class ProductEditViewModel(
                         price = priceValue,
                         discountPercent = percent,
                         discountStartDay = start,
-                        discountEndDay = end
+                        discountEndDay = end,
+                        imagePath = imageName
                     )
                 )
             } else {
@@ -194,10 +255,18 @@ class ProductEditViewModel(
                         price = priceValue,
                         discountPercent = percent,
                         discountStartDay = start,
-                        discountEndDay = end
+                        discountEndDay = end,
+                        imagePath = imageName
                     )
                 )
             }
+            // The photo is now permanent. Delete the old file if it was replaced or removed, and any
+            // photo picked along the way that is not the final one.
+            saved = true
+            val keep = imageName
+            if (savedImageName != keep) imageStore.delete(savedImageName)
+            imported.filter { it != keep }.forEach(imageStore::delete)
+            imported.clear()
             onDone()
         }
     }

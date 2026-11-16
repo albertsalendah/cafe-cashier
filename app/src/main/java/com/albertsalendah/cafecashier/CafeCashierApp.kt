@@ -2,6 +2,7 @@ package com.albertsalendah.cafecashier
 
 import android.app.Application
 import androidx.room.Room
+import com.albertsalendah.cafecashier.data.ProductImageStore
 import com.albertsalendah.cafecashier.data.db.AppDatabase
 import com.albertsalendah.cafecashier.data.db.Settings
 import kotlinx.coroutines.CoroutineScope
@@ -15,6 +16,9 @@ class CafeCashierApp : Application() {
     val database: AppDatabase by lazy {
         Room.databaseBuilder(this, AppDatabase::class.java, "cafe_cashier.db").build()
     }
+
+    // Product photos live in the app's own storage; see ProductImageStore.
+    val imageStore: ProductImageStore by lazy { ProductImageStore(this) }
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 

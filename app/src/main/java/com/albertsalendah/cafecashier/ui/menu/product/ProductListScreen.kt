@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -26,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -34,9 +36,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.albertsalendah.cafecashier.CafeCashierApp
 import com.albertsalendah.cafecashier.R
 import com.albertsalendah.cafecashier.domain.discountStatus
 import com.albertsalendah.cafecashier.ui.appViewModelFactory
+import com.albertsalendah.cafecashier.ui.components.ProductImage
 import com.albertsalendah.cafecashier.ui.components.ShowHiddenRow
 import com.albertsalendah.cafecashier.ui.formatRupiah
 import com.albertsalendah.cafecashier.ui.todayEpochDay
@@ -56,6 +60,8 @@ fun ProductListScreen(
     val categoryList = categories
     val productList = products
     val today = remember { todayEpochDay() }
+    val context = LocalContext.current
+    val imageStore = remember { (context.applicationContext as CafeCashierApp).imageStore }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -119,6 +125,13 @@ fun ProductListScreen(
                     ) {
                         items(productList, key = { "active-${it.id}" }) { product ->
                             ListItem(
+                                leadingContent = {
+                                    ProductImage(
+                                        imageFile = product.imagePath?.let(imageStore::fileFor),
+                                        name = product.name,
+                                        modifier = Modifier.size(56.dp)
+                                    )
+                                },
                                 headlineContent = { Text(product.name) },
                                 supportingContent = {
                                     // Status uses the same window rule as the checkout, so "green" here
@@ -168,6 +181,13 @@ fun ProductListScreen(
                             }
                             items(hidden, key = { "hidden-${it.id}" }) { product ->
                                 ListItem(
+                                    leadingContent = {
+                                        ProductImage(
+                                            imageFile = product.imagePath?.let(imageStore::fileFor),
+                                            name = product.name,
+                                            modifier = Modifier.size(56.dp)
+                                        )
+                                    },
                                     headlineContent = {
                                         Text(
                                             text = product.name,

@@ -1,5 +1,8 @@
 package com.albertsalendah.cafecashier.ui.menu.product
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -52,6 +56,7 @@ import com.albertsalendah.cafecashier.CafeCashierApp
 import com.albertsalendah.cafecashier.R
 import com.albertsalendah.cafecashier.domain.discountStatus
 import com.albertsalendah.cafecashier.ui.components.ExpandableText
+import com.albertsalendah.cafecashier.ui.components.ProductImage
 import com.albertsalendah.cafecashier.ui.components.ThousandsVisualTransformation
 import com.albertsalendah.cafecashier.ui.epochDayToPickerMillis
 import com.albertsalendah.cafecashier.ui.formatEpochDay
@@ -73,7 +78,8 @@ fun ProductEditScreen(
                     productDao = app.database.productDao(),
                     categoryDao = app.database.categoryDao(),
                     productId = productId,
-                    initialCategoryId = initialCategoryId
+                    initialCategoryId = initialCategoryId,
+                    imageStore = app.imageStore
                 )
             }
         }
@@ -86,6 +92,11 @@ fun ProductEditScreen(
     // Which date picker is open: "start", "end" or none.
     var pickerFor by rememberSaveable { mutableStateOf<String?>(null) }
     val today = remember { todayEpochDay() }
+
+    // The system photo picker: no storage permission needed, the user just picks one picture.
+    val photoPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) viewModel.onPhotoPicked(uri)
+    }
 
     // The product was removed from under us: nothing to edit, so close.
     LaunchedEffect(viewModel.missing) {
@@ -135,6 +146,50 @@ fun ProductEditScreen(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                // Photo (optional): a preview with buttons to choose, change or remove it.
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    ProductImage(
+                        imageFile = viewModel.imageFile,
+                        name = viewModel.name,
+                        modifier = Modifier.size(160.dp)
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedButton(
+                            onClick = {
+                                photoPicker.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
+                            },
+                            enabled = !viewModel.importing
+                        ) {
+                            Text(
+                                stringResource(
+                                    if (viewModel.imageName == null) R.string.choose_photo else R.string.change_photo
+                                )
+                            )
+                        }
+                        if (viewModel.imageName != null) {
+                            TextButton(onClick = viewModel::onPhotoRemoved) {
+                                Text(stringResource(R.string.remove_photo))
+                            }
+                        }
+                    }
+                    if (viewModel.photoFailed) {
+                        Text(
+                            text = stringResource(R.string.photo_failed),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+
                 OutlinedTextField(
                     value = viewModel.name,
                     onValueChange = viewModel::onNameChange,

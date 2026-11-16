@@ -68,4 +68,10 @@
     <string name="discount_ends_tomorrow">%1$d%% off · ends tomorrow</string>
     <string name="discount_ends_in_days">%1$d%% off · ends in %2$d days</string>
     <string name="discount_status_expired">Discount expired %1$s</string>
+
+    <!-- Product photo -->
+    <string name="choose_photo">Choose photo</string>
+    <string name="change_photo">Change photo</string>
+    <string name="remove_photo">Remove photo</string>
+    <string name="photo_failed">Couldn\'t use that photo. Try another one.</string>
 </resources>
