@@ -1,6 +1,7 @@
 package com.albertsalendah.cafecashier.ui.menu.product
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,8 +16,10 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.albertsalendah.cafecashier.R
 import com.albertsalendah.cafecashier.ui.appViewModelFactory
+import com.albertsalendah.cafecashier.ui.components.ShowHiddenRow
 import com.albertsalendah.cafecashier.ui.formatRupiah
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,6 +44,8 @@ fun ProductListScreen(
     val categories by viewModel.categories.collectAsStateWithLifecycle()
     val selectedId by viewModel.selectedCategoryId.collectAsStateWithLifecycle()
     val products by viewModel.products.collectAsStateWithLifecycle()
+    val hidden by viewModel.hiddenProducts.collectAsStateWithLifecycle()
+    val showHidden by viewModel.showHidden.collectAsStateWithLifecycle()
     val categoryList = categories
     val productList = products
 
@@ -74,7 +80,7 @@ fun ProductListScreen(
             else -> Column(modifier = Modifier.padding(innerPadding)) {
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(categoryList, key = { it.id }) { category ->
                         FilterChip(
@@ -85,6 +91,8 @@ fun ProductListScreen(
                     }
                 }
                 HorizontalDivider()
+                ShowHiddenRow(checked = showHidden, onCheckedChange = viewModel::setShowHidden)
+                HorizontalDivider()
 
                 when {
                     productList == null -> Box(
@@ -92,7 +100,7 @@ fun ProductListScreen(
                         contentAlignment = Alignment.Center
                     ) { CircularProgressIndicator() }
 
-                    productList.isEmpty() -> Box(
+                    productList.isEmpty() && hidden.isEmpty() -> Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) { Text(stringResource(R.string.products_empty)) }
@@ -101,13 +109,56 @@ fun ProductListScreen(
                         // Space at the bottom so the last row isn't hidden behind the button.
                         contentPadding = PaddingValues(bottom = 88.dp)
                     ) {
-                        items(productList, key = { it.id }) { product ->
+                        items(productList, key = { "active-${it.id}" }) { product ->
                             ListItem(
                                 headlineContent = { Text(product.name) },
                                 supportingContent = { Text(formatRupiah(product.price)) },
                                 modifier = Modifier.clickable { onEditProduct(product.id) }
                             )
                             HorizontalDivider()
+                        }
+
+                        if (showHidden) {
+                            item(key = "hidden-header") {
+                                Text(
+                                    text = stringResource(R.string.hidden_section),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
+                                )
+                            }
+                            if (hidden.isEmpty()) {
+                                item(key = "hidden-none") {
+                                    Text(
+                                        text = stringResource(R.string.no_hidden_products),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                                    )
+                                }
+                            }
+                            items(hidden, key = { "hidden-${it.id}" }) { product ->
+                                ListItem(
+                                    headlineContent = {
+                                        Text(
+                                            text = product.name,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    },
+                                    supportingContent = {
+                                        Text(
+                                            text = formatRupiah(product.price),
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    },
+                                    trailingContent = {
+                                        TextButton(onClick = { viewModel.restore(product) }) {
+                                            Text(stringResource(R.string.restore))
+                                        }
+                                    }
+                                )
+                                HorizontalDivider()
+                            }
                         }
                     }
                 }

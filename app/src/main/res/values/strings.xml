@@ -8,7 +8,13 @@
     <string name="hide_from_menu">Hide from menu</string>
     <string name="hide">Hide</string>
     <string name="hide_item_title">Hide \"%1$s\"?</string>
-    <string name="hide_helper">Hidden items no longer show in the menu or when taking orders. Past sales are not affected.</string>
+    <string name="hide_helper_short">Hidden items no longer show in the menu.</string>
+    <string name="hide_helper">Hidden items no longer show in the menu or when taking orders. Past sales are not affected. You can bring them back later with \"Show hidden\".</string>
+    <string name="show_hidden">Show hidden</string>
+    <string name="hidden_section">Hidden</string>
+    <string name="restore">Restore</string>
+    <string name="more">More...</string>
+    <string name="less">Less</string>
 
     <!-- Categories -->
     <string name="categories">Categories</string>
@@ -16,6 +22,7 @@
     <string name="add_category">Add category</string>
     <string name="rename_category">Edit category</string>
     <string name="category_name">Category name</string>
+    <string name="no_hidden_categories">No hidden categories</string>
     <string name="category_archive_blocked">This category still has active products. Hide or move them first.</string>
 
     <!-- Products -->
@@ -27,5 +34,6 @@
     <string name="product_name">Product name</string>
     <string name="price">Price</string>
     <string name="category_label">Category</string>
+    <string name="no_hidden_products">No hidden products in this category</string>
     <string name="add_category_first">Add a category first, then add products.</string>
 </resources>

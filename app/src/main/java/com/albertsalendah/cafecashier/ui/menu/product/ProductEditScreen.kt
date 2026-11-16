@@ -15,7 +15,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -40,6 +39,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.albertsalendah.cafecashier.CafeCashierApp
 import com.albertsalendah.cafecashier.R
+import com.albertsalendah.cafecashier.ui.components.ExpandableText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -176,10 +176,9 @@ fun ProductEditScreen(
                         TextButton(onClick = { showHideDialog = true }) {
                             Text(stringResource(R.string.hide_from_menu))
                         }
-                        Text(
-                            text = stringResource(R.string.hide_helper),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        ExpandableText(
+                            shortText = stringResource(R.string.hide_helper_short),
+                            fullText = stringResource(R.string.hide_helper)
                         )
                     }
                 }

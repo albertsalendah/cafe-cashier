@@ -37,12 +37,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.albertsalendah.cafecashier.R
 import com.albertsalendah.cafecashier.ui.appViewModelFactory
+import com.albertsalendah.cafecashier.ui.components.ExpandableText
+import com.albertsalendah.cafecashier.ui.components.ShowHiddenRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryListScreen() {
     val viewModel = viewModel<CategoryListViewModel>(factory = appViewModelFactory())
     val categories by viewModel.categories.collectAsStateWithLifecycle()
+    val hidden by viewModel.hiddenCategories.collectAsStateWithLifecycle()
+    val showHidden by viewModel.showHidden.collectAsStateWithLifecycle()
     val message by viewModel.message.collectAsStateWithLifecycle()
     val list = categories
 
@@ -71,32 +75,74 @@ fun CategoryListScreen() {
             }
         }
     ) { innerPadding ->
-        when {
-            list == null -> Box(
+        if (list == null) {
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) { CircularProgressIndicator() }
+        } else {
+            Column(modifier = Modifier.padding(innerPadding)) {
+                // Always visible, so staff can find hidden categories even when none are shown yet.
+                ShowHiddenRow(checked = showHidden, onCheckedChange = viewModel::setShowHidden)
+                HorizontalDivider()
 
-            list.isEmpty() -> Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) { Text(stringResource(R.string.categories_empty)) }
+                if (list.isEmpty() && hidden.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) { Text(stringResource(R.string.categories_empty)) }
+                } else {
+                    LazyColumn(
+                        // Space at the bottom so the last row isn't hidden behind the button.
+                        contentPadding = PaddingValues(bottom = 88.dp)
+                    ) {
+                        items(list, key = { "active-${it.id}" }) { category ->
+                            ListItem(
+                                headlineContent = { Text(category.name) },
+                                modifier = Modifier.clickable { editingId = category.id }
+                            )
+                            HorizontalDivider()
+                        }
 
-            else -> LazyColumn(
-                modifier = Modifier.padding(innerPadding),
-                // Space at the bottom so the last row isn't hidden behind the button.
-                contentPadding = PaddingValues(bottom = 88.dp)
-            ) {
-                items(list, key = { it.id }) { category ->
-                    ListItem(
-                        headlineContent = { Text(category.name) },
-                        modifier = Modifier.clickable { editingId = category.id }
-                    )
-                    HorizontalDivider()
+                        if (showHidden) {
+                            item(key = "hidden-header") {
+                                Text(
+                                    text = stringResource(R.string.hidden_section),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
+                                )
+                            }
+                            if (hidden.isEmpty()) {
+                                item(key = "hidden-none") {
+                                    Text(
+                                        text = stringResource(R.string.no_hidden_categories),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                                    )
+                                }
+                            }
+                            items(hidden, key = { "hidden-${it.id}" }) { category ->
+                                ListItem(
+                                    headlineContent = {
+                                        Text(
+                                            text = category.name,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    },
+                                    trailingContent = {
+                                        TextButton(onClick = { viewModel.restore(category) }) {
+                                            Text(stringResource(R.string.restore))
+                                        }
+                                    }
+                                )
+                                HorizontalDivider()
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -130,6 +176,8 @@ fun CategoryListScreen() {
         )
     }
 
+    // The confirmation shows the full explanation, with no "More..." step: it is the last thing
+    // read before the change.
     list?.firstOrNull { it.id == hidingId }?.let { category ->
         AlertDialog(
             onDismissRequest = { hidingId = null },
@@ -148,7 +196,7 @@ fun CategoryListScreen() {
     }
 }
 
-// One dialog for both add and rename. The "Hide from menu" button and its helper line show only
+// One dialog for both add and rename. The "Hide from menu" button and its explanation show only
 // when onHide is given (rename).
 @Composable
 private fun CategoryNameDialog(
@@ -173,10 +221,9 @@ private fun CategoryNameDialog(
                 )
                 if (onHide != null) {
                     TextButton(onClick = onHide) { Text(stringResource(R.string.hide_from_menu)) }
-                    Text(
-                        text = stringResource(R.string.hide_helper),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ExpandableText(
+                        shortText = stringResource(R.string.hide_helper_short),
+                        fullText = stringResource(R.string.hide_helper),
                         modifier = Modifier.padding(horizontal = 12.dp)
                     )
                 }

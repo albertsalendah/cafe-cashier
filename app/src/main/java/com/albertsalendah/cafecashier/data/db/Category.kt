@@ -21,6 +21,10 @@ interface CategoryDao {
     @Query("SELECT * FROM category WHERE archived = 0 ORDER BY sortOrder, name")
     fun observeActive(): Flow<List<Category>>
 
+    // For the "Show hidden" list, so hidden categories can be restored.
+    @Query("SELECT * FROM category WHERE archived = 1 ORDER BY sortOrder, name")
+    fun observeArchived(): Flow<List<Category>>
+
     @Query("SELECT * FROM category WHERE id = :id")
     suspend fun getById(id: Long): Category?
 

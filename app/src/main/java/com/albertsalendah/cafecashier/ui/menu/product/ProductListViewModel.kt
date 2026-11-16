@@ -10,10 +10,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProductListViewModel(
@@ -44,7 +46,29 @@ class ProductListViewModel(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
+    private val _showHidden = MutableStateFlow(false)
+    val showHidden: StateFlow<Boolean> = _showHidden.asStateFlow()
+
+    // Hidden products of the selected category, only queried while "Show hidden" is on.
+    // Chips only list visible categories, so a hidden product always belongs to a visible one here
+    // (hidden categories are restored first, from the category screen).
+    val hiddenProducts: StateFlow<List<Product>> = combine(selectedCategoryId, _showHidden) { id, show ->
+        id to show
+    }.flatMapLatest { (id, show) ->
+        if (id == null || !show) flowOf(emptyList()) else productDao.observeArchivedByCategory(id)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     fun selectCategory(id: Long) {
         picked.value = id
+    }
+
+    fun setShowHidden(show: Boolean) {
+        _showHidden.value = show
+    }
+
+    // Bring a hidden product back. It moves from the hidden list to the active list by itself,
+    // because both lists are live queries.
+    fun restore(product: Product) {
+        viewModelScope.launch { productDao.update(product.copy(archived = false)) }
     }
 }
