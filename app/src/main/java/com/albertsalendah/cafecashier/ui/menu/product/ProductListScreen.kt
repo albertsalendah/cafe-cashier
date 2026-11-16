@@ -23,6 +23,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,9 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.albertsalendah.cafecashier.R
+import com.albertsalendah.cafecashier.domain.effectiveDiscountPercent
 import com.albertsalendah.cafecashier.ui.appViewModelFactory
 import com.albertsalendah.cafecashier.ui.components.ShowHiddenRow
 import com.albertsalendah.cafecashier.ui.formatRupiah
+import com.albertsalendah.cafecashier.ui.todayEpochDay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +51,7 @@ fun ProductListScreen(
     val showHidden by viewModel.showHidden.collectAsStateWithLifecycle()
     val categoryList = categories
     val productList = products
+    val today = remember { todayEpochDay() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -112,7 +116,23 @@ fun ProductListScreen(
                         items(productList, key = { "active-${it.id}" }) { product ->
                             ListItem(
                                 headlineContent = { Text(product.name) },
-                                supportingContent = { Text(formatRupiah(product.price)) },
+                                supportingContent = {
+                                    // Same rule the checkout uses, so the list shows what customers get today.
+                                    val percent = effectiveDiscountPercent(
+                                        product.discountPercent,
+                                        product.discountStartDay,
+                                        product.discountEndDay,
+                                        today
+                                    )
+                                    Text(
+                                        if (percent > 0) {
+                                            formatRupiah(product.price) + " · " +
+                                                stringResource(R.string.discount_off, percent)
+                                        } else {
+                                            formatRupiah(product.price)
+                                        }
+                                    )
+                                },
                                 modifier = Modifier.clickable { onEditProduct(product.id) }
                             )
                             HorizontalDivider()

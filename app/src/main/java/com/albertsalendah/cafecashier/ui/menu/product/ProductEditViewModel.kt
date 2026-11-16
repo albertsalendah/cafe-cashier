@@ -14,6 +14,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+// What the "are you sure?" popup has to explain when a discount is saved with a missing date.
+sealed interface DiscountDateWarning {
+    data object NoDates : DiscountDateWarning
+    data class NoEndDate(val startDay: Long) : DiscountDateWarning
+    data class NoStartDate(val endDay: Long) : DiscountDateWarning
+}
+
 // productId == null means a new product. Built with its own factory in ProductEditScreen
 // because it needs the id (the shared AppViewModelFactory has no arguments).
 class ProductEditViewModel(
@@ -34,6 +41,15 @@ class ProductEditViewModel(
     var categoryId by mutableStateOf(initialCategoryId)
         private set
 
+    // Discount: whole percent as typed digits ("" = none), and an optional window of epoch days
+    // (both ends inclusive, null = open on that side; see domain/DiscountWindow.kt).
+    var discountText by mutableStateOf("")
+        private set
+    var discountStartDay by mutableStateOf<Long?>(null)
+        private set
+    var discountEndDay by mutableStateOf<Long?>(null)
+        private set
+
     // False while an existing product is still being loaded from the database.
     var ready by mutableStateOf(productId == null)
         private set
@@ -49,8 +65,33 @@ class ProductEditViewModel(
 
     private val price: Long? get() = priceText.toLongOrNull()
 
+    val discountPercent: Int get() = discountText.toIntOrNull() ?: 0
+
+    // The dates only matter while there is a discount; with 0% they are not saved.
+    val datesInvalid: Boolean
+        get() {
+            val start = discountStartDay
+            val end = discountEndDay
+            return discountPercent > 0 && start != null && end != null && end < start
+        }
+
+    // Non-null when a discount would be saved with a missing start and/or end date. The screen
+    // asks the user to confirm before saving in that case.
+    val dateWarning: DiscountDateWarning?
+        get() {
+            if (discountPercent <= 0) return null
+            val start = discountStartDay
+            val end = discountEndDay
+            return when {
+                start != null && end != null -> null
+                start != null -> DiscountDateWarning.NoEndDate(start)
+                end != null -> DiscountDateWarning.NoStartDate(end)
+                else -> DiscountDateWarning.NoDates
+            }
+        }
+
     val canSave: Boolean
-        get() = name.isNotBlank() && (price ?: 0L) > 0L && categoryId != null
+        get() = name.isNotBlank() && (price ?: 0L) > 0L && categoryId != null && !datesInvalid
 
     init {
         if (productId != null) {
@@ -63,6 +104,11 @@ class ProductEditViewModel(
                     name = product.name
                     priceText = product.price.toString()
                     categoryId = product.categoryId
+                    if (product.discountPercent > 0) {
+                        discountText = product.discountPercent.toString()
+                        discountStartDay = product.discountStartDay
+                        discountEndDay = product.discountEndDay
+                    }
                 }
                 ready = true
             }
@@ -82,17 +128,59 @@ class ProductEditViewModel(
         categoryId = id
     }
 
+    // Digits only, at most 100 (a bigger number is clamped to 100).
+    fun onDiscountChange(value: String) {
+        val number = value.filter { it.isDigit() }.take(3).toIntOrNull()
+        discountText = when {
+            number == null -> ""
+            number > 100 -> "100"
+            else -> number.toString()
+        }
+    }
+
+    fun onDiscountStartChange(epochDay: Long?) {
+        discountStartDay = epochDay
+    }
+
+    fun onDiscountEndChange(epochDay: Long?) {
+        discountEndDay = epochDay
+    }
+
     fun save(onDone: () -> Unit) {
         val category = categoryId ?: return
         val priceValue = price ?: return
         if (!canSave || busy) return
         busy = true
+
+        val percent = discountPercent
+        // No discount = no dates stored.
+        val start = if (percent > 0) discountStartDay else null
+        val end = if (percent > 0) discountEndDay else null
+
         viewModelScope.launch {
             val existing = original
             if (existing == null) {
-                productDao.insert(Product(categoryId = category, name = name.trim(), price = priceValue))
+                productDao.insert(
+                    Product(
+                        categoryId = category,
+                        name = name.trim(),
+                        price = priceValue,
+                        discountPercent = percent,
+                        discountStartDay = start,
+                        discountEndDay = end
+                    )
+                )
             } else {
-                productDao.update(existing.copy(categoryId = category, name = name.trim(), price = priceValue))
+                productDao.update(
+                    existing.copy(
+                        categoryId = category,
+                        name = name.trim(),
+                        price = priceValue,
+                        discountPercent = percent,
+                        discountStartDay = start,
+                        discountEndDay = end
+                    )
+                )
             }
             onDone()
         }

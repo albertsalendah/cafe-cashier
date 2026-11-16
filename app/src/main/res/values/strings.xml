@@ -36,4 +36,27 @@
     <string name="category_label">Category</string>
     <string name="no_hidden_products">No hidden products in this category</string>
     <string name="add_category_first">Add a category first, then add products.</string>
+
+    <!-- Discount -->
+    <string name="discount_percent">Discount</string>
+    <string name="discount_percent_hint">Leave empty or 0 for no discount.</string>
+    <string name="discount_start_date">Start date</string>
+    <string name="discount_end_date">End date</string>
+    <string name="date_not_set">not set</string>
+    <string name="clear">Clear</string>
+    <string name="ok">OK</string>
+    <string name="discount_dates_invalid">The end date must not be before the start date.</string>
+    <string name="discount_off">%1$d%% off</string>
+
+    <!-- Confirmation when a discount is saved with a missing date. The %s parts are shown in bold red. -->
+    <string name="discount_confirm_title">Check the discount dates</string>
+    <string name="discount_warn_none">You didn\'t set a start or end date. This discount will apply %1$s.</string>
+    <string name="discount_warn_no_end">You didn\'t set an end date. This discount starts on %1$s and %2$s.</string>
+    <string name="discount_warn_no_start">You didn\'t set a start date. This discount applies %1$s until %2$s.</string>
+    <string name="discount_hl_always">every day, starting now, and never ends</string>
+    <string name="discount_hl_never_ends">never ends</string>
+    <string name="discount_hl_starts_now">starting now</string>
+    <string name="discount_confirm_question">Do you want to save it like this?</string>
+    <string name="save_anyway">Save anyway</string>
+    <string name="go_back">Go back</string>
 </resources>
