@@ -15,7 +15,7 @@ class AppViewModelFactory(private val app: CafeCashierApp) : ViewModelProvider.F
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when {
         modelClass.isAssignableFrom(CategoryListViewModel::class.java) ->
-            CategoryListViewModel(app.database.categoryDao()) as T
+            CategoryListViewModel(app.database.categoryDao(), app.database.productDao()) as T
 
         else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
     }

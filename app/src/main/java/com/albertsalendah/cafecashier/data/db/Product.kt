@@ -39,6 +39,10 @@ interface ProductDao {
     @Query("SELECT * FROM product WHERE archived = 0 AND categoryId = :categoryId ORDER BY name")
     fun observeActiveByCategory(categoryId: Long): Flow<List<Product>>
 
+    // Used to block archiving a category that still has active products.
+    @Query("SELECT COUNT(*) FROM product WHERE categoryId = :categoryId AND archived = 0")
+    suspend fun countActiveInCategory(categoryId: Long): Int
+
     @Query("SELECT * FROM product WHERE id = :id")
     suspend fun getById(id: Long): Product?
 

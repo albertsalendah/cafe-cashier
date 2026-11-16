@@ -3,4 +3,13 @@
     <string name="menu_title">Menu</string>
     <string name="categories">Categories</string>
     <string name="categories_empty">No categories yet</string>
+    <string name="add_category">Add category</string>
+    <string name="rename_category">Edit category</string>
+    <string name="category_name">Category name</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="archive">Archive</string>
+    <string name="archive_category_title">Archive \"%1$s\"?</string>
+    <string name="archive_category_message">It will be hidden from the menu.</string>
+    <string name="category_archive_blocked">This category still has active products. Archive or move them first.</string>
 </resources>
