@@ -17,6 +17,14 @@
     <string name="restore">Restore</string>
     <string name="more">More...</string>
     <string name="less">Less</string>
+    <plurals name="hidden_categories_count">
+        <item quantity="one">%1$d hidden category</item>
+        <item quantity="other">%1$d hidden categories</item>
+    </plurals>
+    <plurals name="hidden_products_count">
+        <item quantity="one">%1$d hidden product in this category</item>
+        <item quantity="other">%1$d hidden products in this category</item>
+    </plurals>
 
     <!-- Categories -->
     <string name="categories">Categories</string>
@@ -24,7 +32,6 @@
     <string name="add_category">Add category</string>
     <string name="rename_category">Edit category</string>
     <string name="category_name">Category name</string>
-    <string name="no_hidden_categories">No hidden categories</string>
     <string name="category_archive_blocked">This category still has active products. Hide or move them first.</string>
 
     <!-- Products -->
@@ -36,7 +43,6 @@
     <string name="product_name">Product name</string>
     <string name="price">Price</string>
     <string name="category_label">Category</string>
-    <string name="no_hidden_products">No hidden products in this category</string>
     <string name="add_category_first">Add a category first, then add products.</string>
 
     <!-- Add-on options -->

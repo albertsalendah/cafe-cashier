@@ -5,20 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.albertsalendah.cafecashier.data.db.Category
 import com.albertsalendah.cafecashier.data.db.CategoryDao
 import com.albertsalendah.cafecashier.data.db.ProductDao
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 // One-shot messages for the screen to show once (a snackbar), then clear with messageShown().
 enum class CategoryMessage { ArchiveBlockedHasProducts }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class CategoryListViewModel(
     private val categoryDao: CategoryDao,
     private val productDao: ProductDao
@@ -32,9 +28,8 @@ class CategoryListViewModel(
     private val _showHidden = MutableStateFlow(false)
     val showHidden: StateFlow<Boolean> = _showHidden.asStateFlow()
 
-    // Hidden categories are only queried while the "Show hidden" switch is on.
-    val hiddenCategories: StateFlow<List<Category>> = _showHidden
-        .flatMapLatest { show -> if (show) categoryDao.observeArchived() else flowOf(emptyList()) }
+    // Always queried: the screen needs the count to decide whether to show the "Show hidden" switch.
+    val hiddenCategories: StateFlow<List<Category>> = categoryDao.observeArchived()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     private val _message = MutableStateFlow<CategoryMessage?>(null)

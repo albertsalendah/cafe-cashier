@@ -49,14 +49,15 @@ class ProductListViewModel(
     private val _showHidden = MutableStateFlow(false)
     val showHidden: StateFlow<Boolean> = _showHidden.asStateFlow()
 
-    // Hidden products of the selected category, only queried while "Show hidden" is on.
+    // Hidden products of the selected category. Always queried (the screen needs the count to decide
+    // whether to show the "Show hidden" switch), and it follows the selected chip.
     // Chips only list visible categories, so a hidden product always belongs to a visible one here
     // (hidden categories are restored first, from the category screen).
-    val hiddenProducts: StateFlow<List<Product>> = combine(selectedCategoryId, _showHidden) { id, show ->
-        id to show
-    }.flatMapLatest { (id, show) ->
-        if (id == null || !show) flowOf(emptyList()) else productDao.observeArchivedByCategory(id)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val hiddenProducts: StateFlow<List<Product>> = selectedCategoryId
+        .flatMapLatest { id ->
+            if (id == null) flowOf(emptyList()) else productDao.observeArchivedByCategory(id)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun selectCategory(id: Long) {
         picked.value = id

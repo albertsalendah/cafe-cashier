@@ -30,6 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -49,6 +50,10 @@ fun CategoryListScreen() {
     val showHidden by viewModel.showHidden.collectAsStateWithLifecycle()
     val message by viewModel.message.collectAsStateWithLifecycle()
     val list = categories
+    // The switch only exists while something is hidden. If the last hidden item is restored while the
+    // switch is on, treat it as off (the stored switch value is left alone).
+    val hasHidden = hidden.isNotEmpty()
+    val showingHidden = showHidden && hasHidden
 
     // Which dialog is open. Ids (not objects) so the state survives rotation.
     var showAdd by rememberSaveable { mutableStateOf(false) }
@@ -84,11 +89,16 @@ fun CategoryListScreen() {
             ) { CircularProgressIndicator() }
         } else {
             Column(modifier = Modifier.padding(innerPadding)) {
-                // Always visible, so staff can find hidden categories even when none are shown yet.
-                ShowHiddenRow(checked = showHidden, onCheckedChange = viewModel::setShowHidden)
-                HorizontalDivider()
+                if (hasHidden) {
+                    ShowHiddenRow(
+                        checked = showHidden,
+                        onCheckedChange = viewModel::setShowHidden,
+                        summary = pluralStringResource(R.plurals.hidden_categories_count, hidden.size, hidden.size)
+                    )
+                    HorizontalDivider()
+                }
 
-                if (list.isEmpty() && hidden.isEmpty()) {
+                if (list.isEmpty() && !showingHidden) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -106,7 +116,7 @@ fun CategoryListScreen() {
                             HorizontalDivider()
                         }
 
-                        if (showHidden) {
+                        if (showingHidden) {
                             item(key = "hidden-header") {
                                 Text(
                                     text = stringResource(R.string.hidden_section),
@@ -114,16 +124,6 @@ fun CategoryListScreen() {
                                     color = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
                                 )
-                            }
-                            if (hidden.isEmpty()) {
-                                item(key = "hidden-none") {
-                                    Text(
-                                        text = stringResource(R.string.no_hidden_categories),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                                    )
-                                }
                             }
                             items(hidden, key = { "hidden-${it.id}" }) { category ->
                                 ListItem(

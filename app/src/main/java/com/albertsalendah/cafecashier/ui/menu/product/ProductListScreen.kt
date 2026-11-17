@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -60,6 +61,10 @@ fun ProductListScreen(
     val categoryList = categories
     val productList = products
     val today = remember { todayEpochDay() }
+    // The switch only exists while the selected category has hidden products. If the last one is
+    // restored while the switch is on, treat it as off.
+    val hasHidden = hidden.isNotEmpty()
+    val showingHidden = showHidden && hasHidden
     val context = LocalContext.current
     val imageStore = remember { (context.applicationContext as CafeCashierApp).imageStore }
 
@@ -105,8 +110,14 @@ fun ProductListScreen(
                     }
                 }
                 HorizontalDivider()
-                ShowHiddenRow(checked = showHidden, onCheckedChange = viewModel::setShowHidden)
-                HorizontalDivider()
+                if (hasHidden) {
+                    ShowHiddenRow(
+                        checked = showHidden,
+                        onCheckedChange = viewModel::setShowHidden,
+                        summary = pluralStringResource(R.plurals.hidden_products_count, hidden.size, hidden.size)
+                    )
+                    HorizontalDivider()
+                }
 
                 when {
                     productList == null -> Box(
@@ -114,7 +125,7 @@ fun ProductListScreen(
                         contentAlignment = Alignment.Center
                     ) { CircularProgressIndicator() }
 
-                    productList.isEmpty() && hidden.isEmpty() -> Box(
+                    productList.isEmpty() && !showingHidden -> Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) { Text(stringResource(R.string.products_empty)) }
@@ -160,7 +171,7 @@ fun ProductListScreen(
                             HorizontalDivider()
                         }
 
-                        if (showHidden) {
+                        if (showingHidden) {
                             item(key = "hidden-header") {
                                 Text(
                                     text = stringResource(R.string.hidden_section),
@@ -168,16 +179,6 @@ fun ProductListScreen(
                                     color = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
                                 )
-                            }
-                            if (hidden.isEmpty()) {
-                                item(key = "hidden-none") {
-                                    Text(
-                                        text = stringResource(R.string.no_hidden_products),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                                    )
-                                }
                             }
                             items(hidden, key = { "hidden-${it.id}" }) { product ->
                                 ListItem(
