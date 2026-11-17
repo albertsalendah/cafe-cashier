@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.albertsalendah.cafecashier.CafeCashierApp
 import com.albertsalendah.cafecashier.ui.menu.addon.AddOnListViewModel
 import com.albertsalendah.cafecashier.ui.menu.category.CategoryListViewModel
+import com.albertsalendah.cafecashier.ui.menu.discount.OrderDiscountListViewModel
 import com.albertsalendah.cafecashier.ui.menu.product.ProductListViewModel
 
 // Manual dependency wiring (no Hilt): every ViewModel is built from the app's single database.
@@ -26,6 +27,9 @@ class AppViewModelFactory(private val app: CafeCashierApp) : ViewModelProvider.F
 
         modelClass.isAssignableFrom(AddOnListViewModel::class.java) ->
             AddOnListViewModel(app.database.categoryDao(), app.database.addOnOptionDao()) as T
+
+        modelClass.isAssignableFrom(OrderDiscountListViewModel::class.java) ->
+            OrderDiscountListViewModel(app.database.orderDiscountDao()) as T
 
         else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
     }

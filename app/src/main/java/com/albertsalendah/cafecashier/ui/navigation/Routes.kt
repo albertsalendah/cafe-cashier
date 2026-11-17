@@ -16,6 +16,9 @@ data object ProductList : NavKey
 @Serializable
 data object AddOnList : NavKey
 
+@Serializable
+data object OrderDiscountList : NavKey
+
 // productId == null means "new product"; categoryId preselects the category for a new product.
 @Serializable
 data class ProductEdit(val productId: Long? = null, val categoryId: Long? = null) : NavKey

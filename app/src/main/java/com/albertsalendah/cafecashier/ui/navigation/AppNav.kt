@@ -9,6 +9,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.albertsalendah.cafecashier.ui.menu.MenuHomeScreen
 import com.albertsalendah.cafecashier.ui.menu.addon.AddOnListScreen
 import com.albertsalendah.cafecashier.ui.menu.category.CategoryListScreen
+import com.albertsalendah.cafecashier.ui.menu.discount.OrderDiscountListScreen
 import com.albertsalendah.cafecashier.ui.menu.product.ProductEditScreen
 import com.albertsalendah.cafecashier.ui.menu.product.ProductListScreen
 
@@ -29,11 +30,15 @@ fun AppNav() {
                 MenuHomeScreen(
                     onOpenCategories = { backStack.add(CategoryList) },
                     onOpenProducts = { backStack.add(ProductList) },
-                    onOpenAddOns = { backStack.add(AddOnList) }
+                    onOpenAddOns = { backStack.add(AddOnList) },
+                    onOpenOrderDiscounts = { backStack.add(OrderDiscountList) }
                 )
             }
             entry<AddOnList> {
                 AddOnListScreen()
+            }
+            entry<OrderDiscountList> {
+                OrderDiscountListScreen()
             }
             entry<CategoryList> {
                 CategoryListScreen()

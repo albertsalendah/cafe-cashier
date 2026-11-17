@@ -20,13 +20,14 @@ import com.albertsalendah.cafecashier.R
 fun MenuHomeScreen(
     onOpenCategories: () -> Unit,
     onOpenProducts: () -> Unit,
-    onOpenAddOns: () -> Unit
+    onOpenAddOns: () -> Unit,
+    onOpenOrderDiscounts: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBar(title = { Text(stringResource(R.string.menu_title)) }) }
     ) { innerPadding ->
-        // One row per menu area. Add-ons and discounts get their rows in later steps.
+        // One row per menu area.
         Column(modifier = Modifier.padding(innerPadding)) {
             ListItem(
                 headlineContent = { Text(stringResource(R.string.categories)) },
@@ -41,6 +42,11 @@ fun MenuHomeScreen(
             ListItem(
                 headlineContent = { Text(stringResource(R.string.add_ons)) },
                 modifier = Modifier.clickable(onClick = onOpenAddOns)
+            )
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.order_discounts)) },
+                modifier = Modifier.clickable(onClick = onOpenOrderDiscounts)
             )
             HorizontalDivider()
         }

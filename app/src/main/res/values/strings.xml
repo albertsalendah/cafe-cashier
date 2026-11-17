@@ -54,6 +54,18 @@
     <string name="delete_add_on_message">This option will be removed. Past sales are not affected.</string>
     <string name="add_category_first_add_ons">Add a category first, then add options.</string>
 
+    <!-- Order discounts (the list of named discounts a cashier can apply to a whole order) -->
+    <string name="order_discounts">Order discounts</string>
+    <string name="order_discounts_empty">No order discounts yet</string>
+    <string name="add_order_discount">Add discount</string>
+    <string name="edit_order_discount">Edit discount</string>
+    <string name="order_discount_name">Discount name</string>
+    <string name="order_discount_type_percent">Percent</string>
+    <string name="order_discount_type_amount">Rupiah amount</string>
+    <string name="order_discount_value">Value</string>
+    <string name="order_discount_value_percent">%1$d%%</string>
+    <string name="delete_order_discount_message">This discount will be removed. Past sales are not affected.</string>
+
     <!-- Discount -->
     <string name="discount_percent">Discount</string>
     <string name="discount_percent_hint">Leave empty or 0 for no discount.</string>
