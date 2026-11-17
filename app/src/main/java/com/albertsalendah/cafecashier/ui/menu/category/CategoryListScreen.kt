@@ -15,7 +15,6 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -38,6 +37,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.albertsalendah.cafecashier.R
 import com.albertsalendah.cafecashier.ui.appViewModelFactory
 import com.albertsalendah.cafecashier.ui.components.ExpandableText
+import com.albertsalendah.cafecashier.ui.components.NameDialog
 import com.albertsalendah.cafecashier.ui.components.ShowHiddenRow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -149,8 +149,9 @@ fun CategoryListScreen() {
     }
 
     if (showAdd) {
-        CategoryNameDialog(
+        NameDialog(
             title = stringResource(R.string.add_category),
+            label = stringResource(R.string.category_name),
             initialName = "",
             onSave = {
                 viewModel.add(it)
@@ -161,17 +162,26 @@ fun CategoryListScreen() {
     }
 
     list?.firstOrNull { it.id == editingId }?.let { category ->
-        CategoryNameDialog(
+        NameDialog(
             title = stringResource(R.string.rename_category),
+            label = stringResource(R.string.category_name),
             initialName = category.name,
             onSave = {
                 viewModel.rename(category, it)
                 editingId = null
             },
             onDismiss = { editingId = null },
-            onHide = {
-                editingId = null
-                hidingId = category.id
+            // The "Hide from menu" button and its explanation show only when renaming.
+            extra = {
+                TextButton(onClick = {
+                    editingId = null
+                    hidingId = category.id
+                }) { Text(stringResource(R.string.hide_from_menu)) }
+                ExpandableText(
+                    shortText = stringResource(R.string.hide_helper_short),
+                    fullText = stringResource(R.string.hide_helper),
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
             }
         )
     }
@@ -194,49 +204,4 @@ fun CategoryListScreen() {
             }
         )
     }
-}
-
-// One dialog for both add and rename. The "Hide from menu" button and its explanation show only
-// when onHide is given (rename).
-@Composable
-private fun CategoryNameDialog(
-    title: String,
-    initialName: String,
-    onSave: (String) -> Unit,
-    onDismiss: () -> Unit,
-    onHide: (() -> Unit)? = null
-) {
-    var name by rememberSaveable { mutableStateOf(initialName) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = {
-            Column {
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    singleLine = true,
-                    label = { Text(stringResource(R.string.category_name)) }
-                )
-                if (onHide != null) {
-                    TextButton(onClick = onHide) { Text(stringResource(R.string.hide_from_menu)) }
-                    ExpandableText(
-                        shortText = stringResource(R.string.hide_helper_short),
-                        fullText = stringResource(R.string.hide_helper),
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    )
-                }
-            }
-        },
-        confirmButton = {
-            // Blank names are rejected by keeping Save disabled.
-            TextButton(onClick = { onSave(name) }, enabled = name.isNotBlank()) {
-                Text(stringResource(R.string.save))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
-        }
-    )
 }

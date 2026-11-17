@@ -3,6 +3,8 @@
     <string name="menu_title">Menu</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="delete_item_title">Delete \"%1$s\"?</string>
 
     <!-- Hiding (archiving) an item. Shared by categories and products. -->
     <string name="hide_from_menu">Hide from menu</string>
@@ -36,6 +38,15 @@
     <string name="category_label">Category</string>
     <string name="no_hidden_products">No hidden products in this category</string>
     <string name="add_category_first">Add a category first, then add products.</string>
+
+    <!-- Add-on options -->
+    <string name="add_ons">Add-on options</string>
+    <string name="add_ons_empty">No add-on options in this category yet</string>
+    <string name="add_add_on">Add option</string>
+    <string name="edit_add_on">Edit option</string>
+    <string name="add_on_name">Option name</string>
+    <string name="delete_add_on_message">This option will be removed. Past sales are not affected.</string>
+    <string name="add_category_first_add_ons">Add a category first, then add options.</string>
 
     <!-- Discount -->
     <string name="discount_percent">Discount</string>

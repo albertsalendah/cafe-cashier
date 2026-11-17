@@ -17,7 +17,11 @@ import com.albertsalendah.cafecashier.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuHomeScreen(onOpenCategories: () -> Unit, onOpenProducts: () -> Unit) {
+fun MenuHomeScreen(
+    onOpenCategories: () -> Unit,
+    onOpenProducts: () -> Unit,
+    onOpenAddOns: () -> Unit
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBar(title = { Text(stringResource(R.string.menu_title)) }) }
@@ -32,6 +36,11 @@ fun MenuHomeScreen(onOpenCategories: () -> Unit, onOpenProducts: () -> Unit) {
             ListItem(
                 headlineContent = { Text(stringResource(R.string.products)) },
                 modifier = Modifier.clickable(onClick = onOpenProducts)
+            )
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.add_ons)) },
+                modifier = Modifier.clickable(onClick = onOpenAddOns)
             )
             HorizontalDivider()
         }

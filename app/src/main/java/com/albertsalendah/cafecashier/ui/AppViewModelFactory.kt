@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.albertsalendah.cafecashier.CafeCashierApp
+import com.albertsalendah.cafecashier.ui.menu.addon.AddOnListViewModel
 import com.albertsalendah.cafecashier.ui.menu.category.CategoryListViewModel
 import com.albertsalendah.cafecashier.ui.menu.product.ProductListViewModel
 
@@ -22,6 +23,9 @@ class AppViewModelFactory(private val app: CafeCashierApp) : ViewModelProvider.F
 
         modelClass.isAssignableFrom(ProductListViewModel::class.java) ->
             ProductListViewModel(app.database.categoryDao(), app.database.productDao()) as T
+
+        modelClass.isAssignableFrom(AddOnListViewModel::class.java) ->
+            AddOnListViewModel(app.database.categoryDao(), app.database.addOnOptionDao()) as T
 
         else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
     }

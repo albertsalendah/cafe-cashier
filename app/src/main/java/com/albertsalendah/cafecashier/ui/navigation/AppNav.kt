@@ -7,6 +7,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.albertsalendah.cafecashier.ui.menu.MenuHomeScreen
+import com.albertsalendah.cafecashier.ui.menu.addon.AddOnListScreen
 import com.albertsalendah.cafecashier.ui.menu.category.CategoryListScreen
 import com.albertsalendah.cafecashier.ui.menu.product.ProductEditScreen
 import com.albertsalendah.cafecashier.ui.menu.product.ProductListScreen
@@ -27,8 +28,12 @@ fun AppNav() {
             entry<MenuHome> {
                 MenuHomeScreen(
                     onOpenCategories = { backStack.add(CategoryList) },
-                    onOpenProducts = { backStack.add(ProductList) }
+                    onOpenProducts = { backStack.add(ProductList) },
+                    onOpenAddOns = { backStack.add(AddOnList) }
                 )
+            }
+            entry<AddOnList> {
+                AddOnListScreen()
             }
             entry<CategoryList> {
                 CategoryListScreen()
