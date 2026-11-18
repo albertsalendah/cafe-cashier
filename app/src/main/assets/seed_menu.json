@@ -1,0 +1,208 @@
+{
+  "categories": [
+    {
+      "name": "FOODS",
+      "products": [
+        {
+          "name": "NASI CAMPUR SPESIAL",
+          "price": 19000
+        },
+        {
+          "name": "NASI IKAN CAKALANG",
+          "price": 13000
+        },
+        {
+          "name": "NASI SAMBAL ROA",
+          "price": 13000
+        },
+        {
+          "name": "Nasi Dabu Roa Telur",
+          "price": 9000
+        },
+        {
+          "name": "Nasgor Cakalang",
+          "price": 13000
+        },
+        {
+          "name": "Nasgor Roa",
+          "price": 13000
+        },
+        {
+          "name": "NASI PUTIH",
+          "price": 4000
+        },
+        {
+          "name": "Bakmi Gr. Cakalang",
+          "price": 13000
+        },
+        {
+          "name": "Bakmi K. Cakalang",
+          "price": 13000
+        },
+        {
+          "name": "Bakmi Gr. Roa",
+          "price": 13000
+        },
+        {
+          "name": "Bakmi K. Roa",
+          "price": 13000
+        },
+        {
+          "name": "Indomie Gr. Cakalang",
+          "price": 9000
+        },
+        {
+          "name": "Indomie K. Cakalang",
+          "price": 9000
+        },
+        {
+          "name": "Indomie Gr. Roa",
+          "price": 9000
+        },
+        {
+          "name": "Indomie K. Roa",
+          "price": 9000
+        },
+        {
+          "name": "Cakalang Kemasan 80gr",
+          "price": 13000
+        },
+        {
+          "name": "Cakalang Kemasan 150gr",
+          "price": 28000
+        },
+        {
+          "name": "Roa Kemasan 40gr",
+          "price": 13000
+        },
+        {
+          "name": "Roa Kemasan 120gr",
+          "price": 40000
+        },
+        {
+          "name": "KRUPUK NASGOR",
+          "price": 1000
+        },
+        {
+          "name": "TAHU GORENG",
+          "price": 9000
+        },
+        {
+          "name": "paket 6 (indomie goreng toping roa cakalang +nasi)",
+          "price": 13000
+        },
+        {
+          "name": "TELUR",
+          "price": 5000
+        }
+      ]
+    },
+    {
+      "name": "DRINKS",
+      "products": [
+        {
+          "name": "Cappucino",
+          "price": 10000
+        },
+        {
+          "name": "Kopi Latte",
+          "price": 10000
+        },
+        {
+          "name": "Kopi Milo",
+          "price": 10000
+        },
+        {
+          "name": "Kopi Aren",
+          "price": 10000
+        },
+        {
+          "name": "CHOCOLATE",
+          "price": 10000
+        },
+        {
+          "name": "Lemonade",
+          "price": 7000
+        },
+        {
+          "name": "Oreo Boom",
+          "price": 12000
+        },
+        {
+          "name": "Choco boom",
+          "price": 12000
+        },
+        {
+          "name": "Choco Beng",
+          "price": 12000
+        },
+        {
+          "name": "Teh Tarik",
+          "price": 9000
+        },
+        {
+          "name": "Teh Kampul",
+          "price": 7000
+        },
+        {
+          "name": "Milo Keju",
+          "price": 12000
+        },
+        {
+          "name": "TEH",
+          "price": 4000
+        },
+        {
+          "name": "Vanila Oreo",
+          "price": 12000
+        }
+      ]
+    },
+    {
+      "name": "SNACKS",
+      "products": [
+        {
+          "name": "Pisang Goreng Dabu Roa",
+          "price": 11000
+        },
+        {
+          "name": "Singkong Dabu Roa",
+          "price": 11000
+        }
+      ]
+    },
+    {
+      "name": "OTHERS",
+      "products": []
+    },
+    {
+      "name": "PACKS",
+      "products": [
+        {
+          "name": "Paket 1 (2 NP +1 C 40gr+1 CP 40gr)",
+          "price": 25000
+        },
+        {
+          "name": "Paket 2 (2 NCP + 2 NCPM)",
+          "price": 60000
+        },
+        {
+          "name": "Paket 3 (1 NCP + 1 OREO BOOM)",
+          "price": 30000
+        },
+        {
+          "name": "Paket 4 (1 Cappu+1 Choco + 1 Oreo Boom)",
+          "price": 37000
+        },
+        {
+          "name": "Paket 5 (1 Cappu + 1 Choco)",
+          "price": 18000
+        },
+        {
+          "name": "Paket 8 (4 NCP + 4 NCPM)",
+          "price": 120000
+        }
+      ]
+    }
+  ]
+}

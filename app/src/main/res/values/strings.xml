@@ -54,6 +54,15 @@
     <string name="delete_add_on_message">This option will be removed. Past sales are not affected.</string>
     <string name="add_category_first_add_ons">Add a category first, then add options.</string>
 
+    <!-- One-time import of the old menu (shown on the menu screen only while the menu is empty) -->
+    <string name="import_old_menu">Import old menu</string>
+    <string name="import_old_menu_hint">Fill the empty menu with the categories and products from the old app</string>
+    <string name="import_old_menu_title">Import the old menu?</string>
+    <string name="import_old_menu_message">This adds the old categories and products. You can edit or hide any of them afterwards.</string>
+    <string name="import_action">Import</string>
+    <string name="import_old_menu_done">Old menu imported. Check the prices before you take orders.</string>
+    <string name="import_old_menu_failed">Couldn\'t import the old menu.</string>
+
     <!-- Order discounts (the list of named discounts a cashier can apply to a whole order) -->
     <string name="order_discounts">Order discounts</string>
     <string name="order_discounts_empty">No order discounts yet</string>
