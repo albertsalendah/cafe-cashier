@@ -54,6 +54,75 @@
     <string name="delete_add_on_message">This option will be removed. Past sales are not affected.</string>
     <string name="add_category_first_add_ons">Add a category first, then add options.</string>
 
+    <!-- Home tabs -->
+    <string name="tab_order">Order</string>
+    <string name="tab_bills">Bills</string>
+    <string name="tab_menu">Menu</string>
+
+    <!-- Order screen and cart -->
+    <string name="new_order">New order</string>
+    <string name="order_empty_menu">Add categories and products in the Menu tab first.</string>
+    <string name="order_type_dine_in">Dine in</string>
+    <string name="order_type_takeaway">Takeaway</string>
+    <plurals name="cart_items">
+        <item quantity="one">Cart · %1$d item</item>
+        <item quantity="other">Cart · %1$d items</item>
+    </plurals>
+    <string name="cart_title">Cart</string>
+    <string name="cart_empty">The cart is empty.</string>
+    <string name="cart_clear_title">Clear the cart?</string>
+    <string name="cart_clear_message">All items will be removed from this order.</string>
+    <string name="table_number">Table number (optional)</string>
+    <string name="customer_name">Customer name (optional)</string>
+    <string name="line_quantity_price">%1$d × %2$s</string>
+    <string name="decrease_quantity">Decrease quantity</string>
+    <string name="increase_quantity">Increase quantity</string>
+    <string name="line_add_ons">Add-ons</string>
+    <string name="line_note">Note (optional)</string>
+    <string name="remove_item">Remove item</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="product_discounts">Product discounts</string>
+    <string name="tax">Tax</string>
+    <string name="rounding">Rounding</string>
+    <string name="total">Total</string>
+
+    <!-- Saved (open) bills and the Bills tab -->
+    <string name="bills_empty">No open bills.</string>
+    <string name="bill_title">Bill #%1$d</string>
+    <string name="bill_table">Table %1$s</string>
+    <string name="bill_open_failed">Couldn\'t open that bill.</string>
+    <string name="bills_replace_title">Replace the current order?</string>
+    <string name="bills_replace_message">You have unsaved changes. Opening this bill discards them.</string>
+    <string name="open_bill">Open bill</string>
+    <string name="edit_bill">Edit bill</string>
+    <string name="close_bill">Close editing</string>
+    <string name="save_bill">Save bill</string>
+    <string name="bill_save_failed">Couldn\'t save the bill. Try again.</string>
+    <string name="bill_not_open">This bill was already paid or cancelled, so it can\'t be changed.</string>
+    <string name="close">Close</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="discard">Discard</string>
+    <string name="discard_changes_title">Discard your changes?</string>
+    <string name="discard_changes_message">The changes you made to this bill have not been saved.</string>
+    <string name="cancel_bill">Cancel this bill</string>
+    <string name="cancel_bill_title">Cancel this bill?</string>
+    <string name="cancel_bill_message">The bill stays in the history as cancelled. This can\'t be undone.</string>
+    <string name="cancel_reason">Reason</string>
+    <string name="cancel_bill_failed">Couldn\'t cancel the bill. Try again.</string>
+
+    <!-- Checkout -->
+    <string name="pay">Pay</string>
+    <string name="checkout_title">Payment</string>
+    <string name="order_discount_label">Order discount</string>
+    <string name="discount_none">None</string>
+    <string name="cash_received">Cash received</string>
+    <string name="cash_exact">Exact</string>
+    <string name="change_label">Change</string>
+    <string name="short_by">Short by %1$s</string>
+    <string name="confirm_payment">Confirm payment</string>
+    <string name="payment_received">Payment received</string>
+    <string name="pay_failed">Couldn\'t save the payment, nothing was charged. Try again.</string>
+
     <!-- One-time import of the old menu (shown on the menu screen only while the menu is empty) -->
     <string name="import_old_menu">Import old menu</string>
     <string name="import_old_menu_hint">Fill the empty menu with the categories and products from the old app</string>

@@ -27,6 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun settingsDao(): SettingsDao
     abstract fun saleDao(): SaleDao
     abstract fun saleItemDao(): SaleItemDao
+    abstract fun saleWriteDao(): SaleWriteDao
     abstract fun dailyCashDao(): DailyCashDao
     abstract fun expenseCategoryDao(): ExpenseCategoryDao
     abstract fun expenseDao(): ExpenseDao

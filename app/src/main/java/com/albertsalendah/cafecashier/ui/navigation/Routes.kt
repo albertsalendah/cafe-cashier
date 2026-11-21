@@ -4,8 +4,15 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 // Back-stack keys. Each must be @Serializable and a NavKey so the stack survives process death.
+// The app's home: the bottom bar with the Order, Bills and Menu tabs.
 @Serializable
-data object MenuHome : NavKey
+data object Home : NavKey
+
+@Serializable
+data object Cart : NavKey
+
+@Serializable
+data object Checkout : NavKey
 
 @Serializable
 data object CategoryList : NavKey

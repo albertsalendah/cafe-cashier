@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.albertsalendah.cafecashier.data.ProductImageStore
 import com.albertsalendah.cafecashier.data.db.AppDatabase
 import com.albertsalendah.cafecashier.data.db.Settings
+import com.albertsalendah.cafecashier.ui.order.OrderDraftHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,7 +21,10 @@ class CafeCashierApp : Application() {
     // Product photos live in the app's own storage; see ProductImageStore.
     val imageStore: ProductImageStore by lazy { ProductImageStore(this) }
 
-    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    // The order being taken (in memory only), shared by the Order screen, the cart and the checkout.
+    val orderDraftHolder: OrderDraftHolder = OrderDraftHolder()
+
+    private val appScope =CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onCreate() {
         super.onCreate()

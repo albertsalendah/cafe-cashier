@@ -6,16 +6,22 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.albertsalendah.cafecashier.ui.menu.MenuHomeScreen
+import com.albertsalendah.cafecashier.ui.home.HomeScreen
 import com.albertsalendah.cafecashier.ui.menu.addon.AddOnListScreen
 import com.albertsalendah.cafecashier.ui.menu.category.CategoryListScreen
 import com.albertsalendah.cafecashier.ui.menu.discount.OrderDiscountListScreen
 import com.albertsalendah.cafecashier.ui.menu.product.ProductEditScreen
 import com.albertsalendah.cafecashier.ui.menu.product.ProductListScreen
+import com.albertsalendah.cafecashier.ui.order.CartScreen
+import com.albertsalendah.cafecashier.ui.order.CheckoutScreen
 
 @Composable
 fun AppNav() {
-    val backStack = rememberNavBackStack(MenuHome)
+    val backStack = rememberNavBackStack(Home)
+    // Back to the Home screen, whatever is on top (Home is always the first entry). Safe to call twice.
+    val popToHome = {
+        while (backStack.size > 1) backStack.removeLastOrNull()
+    }
 
     NavDisplay(
         backStack = backStack,
@@ -26,12 +32,25 @@ fun AppNav() {
             rememberViewModelStoreNavEntryDecorator()
         ),
         entryProvider = entryProvider {
-            entry<MenuHome> {
-                MenuHomeScreen(
+            entry<Home> {
+                HomeScreen(
+                    onOpenCart = { backStack.add(Cart) },
                     onOpenCategories = { backStack.add(CategoryList) },
                     onOpenProducts = { backStack.add(ProductList) },
                     onOpenAddOns = { backStack.add(AddOnList) },
                     onOpenOrderDiscounts = { backStack.add(OrderDiscountList) }
+                )
+            }
+            entry<Cart> {
+                CartScreen(
+                    onBack = { backStack.removeLastOrNull() },
+                    onCheckout = { backStack.add(Checkout) }
+                )
+            }
+            entry<Checkout> {
+                CheckoutScreen(
+                    onBack = { backStack.removeLastOrNull() },
+                    onDone = { popToHome() }
                 )
             }
             entry<AddOnList> {

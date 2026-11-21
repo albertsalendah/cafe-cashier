@@ -7,11 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.albertsalendah.cafecashier.CafeCashierApp
 import com.albertsalendah.cafecashier.data.MenuSeeder
+import com.albertsalendah.cafecashier.ui.bills.BillsViewModel
 import com.albertsalendah.cafecashier.ui.menu.MenuHomeViewModel
 import com.albertsalendah.cafecashier.ui.menu.addon.AddOnListViewModel
 import com.albertsalendah.cafecashier.ui.menu.category.CategoryListViewModel
 import com.albertsalendah.cafecashier.ui.menu.discount.OrderDiscountListViewModel
 import com.albertsalendah.cafecashier.ui.menu.product.ProductListViewModel
+import com.albertsalendah.cafecashier.ui.order.CartViewModel
+import com.albertsalendah.cafecashier.ui.order.CheckoutViewModel
+import com.albertsalendah.cafecashier.ui.order.OrderViewModel
 
 // Manual dependency wiring (no Hilt): every ViewModel is built from the app's single database.
 // Add one branch per new ViewModel that needs no screen arguments. A ViewModel that needs an
@@ -41,6 +45,38 @@ class AppViewModelFactory(private val app: CafeCashierApp) : ViewModelProvider.F
 
         modelClass.isAssignableFrom(OrderDiscountListViewModel::class.java) ->
             OrderDiscountListViewModel(app.database.orderDiscountDao()) as T
+
+        modelClass.isAssignableFrom(OrderViewModel::class.java) ->
+            OrderViewModel(
+                app.database.categoryDao(),
+                app.database.productDao(),
+                app.database.settingsDao(),
+                app.orderDraftHolder
+            ) as T
+
+        modelClass.isAssignableFrom(CartViewModel::class.java) ->
+            CartViewModel(
+                app.database.settingsDao(),
+                app.database.addOnOptionDao(),
+                app.database.saleWriteDao(),
+                app.orderDraftHolder
+            ) as T
+
+        modelClass.isAssignableFrom(CheckoutViewModel::class.java) ->
+            CheckoutViewModel(
+                app.database.settingsDao(),
+                app.database.orderDiscountDao(),
+                app.database.saleWriteDao(),
+                app.orderDraftHolder
+            ) as T
+
+        modelClass.isAssignableFrom(BillsViewModel::class.java) ->
+            BillsViewModel(
+                app.database.saleDao(),
+                app.database.saleWriteDao(),
+                app.database.productDao(),
+                app.orderDraftHolder
+            ) as T
 
         else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
     }

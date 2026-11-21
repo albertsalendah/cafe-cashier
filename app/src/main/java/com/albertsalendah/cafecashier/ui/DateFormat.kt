@@ -1,7 +1,9 @@
 package com.albertsalendah.cafecashier.ui
 
 import java.time.Clock
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -23,3 +25,15 @@ fun todayEpochDay(clock: Clock = Clock.systemDefaultZone()): Long = LocalDate.no
 // 16 Nov 2026
 fun formatEpochDay(epochDay: Long, locale: Locale = Locale.getDefault()): String =
     LocalDate.ofEpochDay(epochDay).format(DateTimeFormatter.ofPattern("d MMM yyyy", locale))
+
+// "14:32" for a time today, "16 Nov, 14:32" for an earlier or later day. [millis] is epoch millis.
+fun formatBillTime(
+    millis: Long,
+    today: LocalDate = LocalDate.now(),
+    zone: ZoneId = ZoneId.systemDefault(),
+    locale: Locale = Locale.getDefault()
+): String {
+    val dateTime = Instant.ofEpochMilli(millis).atZone(zone)
+    val pattern = if (dateTime.toLocalDate() == today) "HH:mm" else "d MMM, HH:mm"
+    return dateTime.format(DateTimeFormatter.ofPattern(pattern, locale))
+}
