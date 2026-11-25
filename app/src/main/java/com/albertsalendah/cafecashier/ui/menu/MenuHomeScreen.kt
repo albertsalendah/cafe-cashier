@@ -34,7 +34,8 @@ fun MenuHomeScreen(
     onOpenCategories: () -> Unit,
     onOpenProducts: () -> Unit,
     onOpenAddOns: () -> Unit,
-    onOpenOrderDiscounts: () -> Unit
+    onOpenOrderDiscounts: () -> Unit,
+    onOpenSettings: () -> Unit
 ) {
     val viewModel = viewModel<MenuHomeViewModel>(factory = appViewModelFactory())
     val canImport by viewModel.canImport.collectAsStateWithLifecycle()
@@ -91,6 +92,12 @@ fun MenuHomeScreen(
             ListItem(
                 headlineContent = { Text(stringResource(R.string.order_discounts)) },
                 modifier = Modifier.clickable(onClick = onOpenOrderDiscounts)
+            )
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.settings_title)) },
+                supportingContent = { Text(stringResource(R.string.settings_hint)) },
+                modifier = Modifier.clickable(onClick = onOpenSettings)
             )
             HorizontalDivider()
         }

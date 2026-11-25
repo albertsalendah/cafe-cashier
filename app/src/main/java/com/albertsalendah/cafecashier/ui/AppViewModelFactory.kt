@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.albertsalendah.cafecashier.CafeCashierApp
 import com.albertsalendah.cafecashier.data.MenuSeeder
 import com.albertsalendah.cafecashier.ui.bills.BillsViewModel
+import com.albertsalendah.cafecashier.ui.cash.CashViewModel
+import com.albertsalendah.cafecashier.ui.cash.category.ExpenseCategoryListViewModel
 import com.albertsalendah.cafecashier.ui.menu.MenuHomeViewModel
 import com.albertsalendah.cafecashier.ui.menu.addon.AddOnListViewModel
 import com.albertsalendah.cafecashier.ui.menu.category.CategoryListViewModel
@@ -16,6 +18,9 @@ import com.albertsalendah.cafecashier.ui.menu.product.ProductListViewModel
 import com.albertsalendah.cafecashier.ui.order.CartViewModel
 import com.albertsalendah.cafecashier.ui.order.CheckoutViewModel
 import com.albertsalendah.cafecashier.ui.order.OrderViewModel
+import com.albertsalendah.cafecashier.ui.reports.ReportsViewModel
+import com.albertsalendah.cafecashier.ui.sales.SalesViewModel
+import com.albertsalendah.cafecashier.ui.settings.SettingsViewModel
 
 // Manual dependency wiring (no Hilt): every ViewModel is built from the app's single database.
 // Add one branch per new ViewModel that needs no screen arguments. A ViewModel that needs an
@@ -77,6 +82,32 @@ class AppViewModelFactory(private val app: CafeCashierApp) : ViewModelProvider.F
                 app.database.productDao(),
                 app.orderDraftHolder
             ) as T
+
+        modelClass.isAssignableFrom(CashViewModel::class.java) ->
+            CashViewModel(
+                app.database.dailyCashDao(),
+                app.database.expenseDao(),
+                app.database.expenseCategoryDao(),
+                app.database.saleDao()
+            ) as T
+
+        modelClass.isAssignableFrom(ExpenseCategoryListViewModel::class.java) ->
+            ExpenseCategoryListViewModel(app.database.expenseCategoryDao()) as T
+
+        modelClass.isAssignableFrom(SalesViewModel::class.java) ->
+            SalesViewModel(app.database.saleDao()) as T
+
+        modelClass.isAssignableFrom(ReportsViewModel::class.java) ->
+            ReportsViewModel(
+                app.database.saleDao(),
+                app.database.saleItemDao(),
+                app.database.expenseDao(),
+                app.database.expenseCategoryDao(),
+                app.database.settingsDao()
+            ) as T
+
+        modelClass.isAssignableFrom(SettingsViewModel::class.java) ->
+            SettingsViewModel(app.database.settingsDao(), app.imageStore) as T
 
         else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
     }

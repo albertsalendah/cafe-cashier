@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
@@ -61,6 +62,11 @@ class CheckoutViewModel(
             list?.firstOrNull { it.id == id }?.let { CalcOrderDiscount(it.type, it.value) }
         }
     ).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), calculateSale(emptyList(), null, 0, 1L))
+
+    // The tax rate shown next to the tax amount: "Tax (10%)". Same settings row the amounts use.
+    val taxPercent: StateFlow<Int> = settingsDao.observe()
+        .map { it?.taxPercent ?: 0 }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
 
     // What was typed in the cash field: digits only.
     private val _cashText = MutableStateFlow("")

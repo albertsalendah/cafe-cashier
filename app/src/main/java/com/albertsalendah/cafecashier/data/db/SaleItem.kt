@@ -53,6 +53,15 @@ interface SaleItemDao {
     @Query("SELECT * FROM sale_item WHERE saleId = :saleId ORDER BY id")
     suspend fun getBySale(saleId: Long): List<SaleItem>
 
+    // The lines of every PAID sale in the span (by payment time), for the product report.
+    // Voided and cancelled sales are not PAID, so their lines are left out.
+    @Query(
+        "SELECT sale_item.* FROM sale_item INNER JOIN sale ON sale.id = sale_item.saleId " +
+            "WHERE sale.status = 'PAID' AND sale.paidAt >= :fromMillis AND sale.paidAt < :toMillis " +
+            "ORDER BY sale_item.id"
+    )
+    fun observePaidItemsBetween(fromMillis: Long, toMillis: Long): Flow<List<SaleItem>>
+
     @Insert
     suspend fun insert(item: SaleItem): Long
 

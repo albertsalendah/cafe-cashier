@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -43,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -69,6 +72,7 @@ fun OrderScreen(onOpenCart: () -> Unit) {
     val draft by viewModel.draft.collectAsStateWithLifecycle()
     val quantities by viewModel.quantities.collectAsStateWithLifecycle()
     val amounts by viewModel.amounts.collectAsStateWithLifecycle()
+    val settings by viewModel.settings.collectAsStateWithLifecycle()
     val categoryList = categories
     val productList = products
     val today = remember { todayEpochDay() }
@@ -83,13 +87,31 @@ fun OrderScreen(onOpenCart: () -> Unit) {
             Column {
                 TopAppBar(
                     title = {
-                        Text(
-                            if (draft.saleId != null) {
-                                stringResource(R.string.edit_bill)
-                            } else {
-                                stringResource(R.string.new_order)
+                        // With a saved bill loaded the title says so; otherwise it carries the café's
+                        // name and logo once they are set in Settings, else the plain "New order".
+                        val storeName = settings?.storeName?.trim().orEmpty()
+                        val logoName = settings?.logoPath
+                        if (draft.saleId != null) {
+                            Text(stringResource(R.string.edit_bill))
+                        } else if (storeName.isEmpty() && logoName == null) {
+                            Text(stringResource(R.string.new_order))
+                        } else {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                if (logoName != null) {
+                                    ProductImage(
+                                        imageFile = imageStore.fileFor(logoName),
+                                        name = storeName.ifEmpty { "Cafe" },
+                                        modifier = Modifier.size(36.dp)
+                                    )
+                                    Spacer(Modifier.width(12.dp))
+                                }
+                                Text(
+                                    text = storeName.ifEmpty { stringResource(R.string.new_order) },
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
                             }
-                        )
+                        }
                     }
                 )
                 // While a saved bill is loaded, say clearly which one it is.

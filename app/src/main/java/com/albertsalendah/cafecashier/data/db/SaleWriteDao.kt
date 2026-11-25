@@ -59,4 +59,16 @@ abstract class SaleWriteDao {
         updateSale(existing.copy(status = SaleStatus.CANCELLED, cancelledAt = now, cancelReason = reason))
         return true
     }
+
+    // Voids a PAID sale: status CANCELLED with the reason and time. Its paid time, payment details,
+    // lines and amounts stay as they were, so the history still shows what was voided and when it was
+    // paid. Every sum only counts PAID sales, so it drops out of the cash and the reports by itself.
+    // Returns false (nothing changed) if the sale is not PAID, so a second tap can't void it twice.
+    @Transaction
+    open suspend fun voidPaidSale(saleId: Long, reason: String, now: Long): Boolean {
+        val existing = getSale(saleId) ?: return false
+        if (existing.status != SaleStatus.PAID) return false
+        updateSale(existing.copy(status = SaleStatus.CANCELLED, cancelledAt = now, cancelReason = reason))
+        return true
+    }
 }

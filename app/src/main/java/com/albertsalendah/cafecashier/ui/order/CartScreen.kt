@@ -67,6 +67,7 @@ fun CartScreen(onBack: () -> Unit, onCheckout: () -> Unit) {
     val viewModel = viewModel<CartViewModel>(factory = appViewModelFactory())
     val draft by viewModel.draft.collectAsStateWithLifecycle()
     val amounts by viewModel.amounts.collectAsStateWithLifecycle()
+    val taxPercent by viewModel.taxPercent.collectAsStateWithLifecycle()
 
     var showClearConfirm by rememberSaveable { mutableStateOf(false) }
     var showDiscardConfirm by rememberSaveable { mutableStateOf(false) }
@@ -204,7 +205,7 @@ fun CartScreen(onBack: () -> Unit, onCheckout: () -> Unit) {
                             )
                         }
                         if (amounts.taxAmount > 0) {
-                            AmountRow(stringResource(R.string.tax), formatRupiah(amounts.taxAmount))
+                            AmountRow(stringResource(R.string.tax_with_percent, taxPercent), formatRupiah(amounts.taxAmount))
                         }
                         if (amounts.rounding != 0L) {
                             AmountRow(stringResource(R.string.rounding), formatRupiah(amounts.rounding))

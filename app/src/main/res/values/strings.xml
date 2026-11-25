@@ -181,4 +181,161 @@
     <string name="change_photo">Change photo</string>
     <string name="remove_photo">Remove photo</string>
     <string name="photo_failed">Couldn\'t use that photo. Try another one.</string>
+
+    <!-- Cash tab: opening cash, expenses and the closing summary -->
+    <string name="tab_cash">Cash</string>
+    <string name="cash_title">Cash</string>
+    <string name="go_to_today">Go to today</string>
+    <string name="day_today_with_date">Today · %1$s</string>
+    <string name="previous_day">Previous day</string>
+    <string name="next_day">Next day</string>
+    <string name="opening_cash">Opening cash</string>
+    <string name="opening_cash_not_set">Not set. Tap to enter it.</string>
+    <string name="set_opening_cash">Opening cash</string>
+    <string name="closing_title">Cash in the drawer</string>
+    <string name="closing_cash_sales">Cash sales</string>
+    <string name="closing_daily_expenses">Daily cash expenses</string>
+    <string name="closing_expected">Expected cash in the drawer</string>
+    <string name="closing_opening_missing">No opening cash is set for this day, so it counts as Rp 0.</string>
+    <string name="closing_operational">Operational expenses (not from the drawer)</string>
+
+    <!-- Expenses -->
+    <string name="expenses_title">Expenses</string>
+    <string name="expenses_hint">Tap an expense to cancel it.</string>
+    <string name="expenses_empty">No expenses on this day.</string>
+    <string name="add_expense">Add expense</string>
+    <string name="expense_description">Description</string>
+    <string name="expense_amount">Amount each</string>
+    <string name="expense_quantity">Quantity</string>
+    <string name="expense_total">Total %1$s</string>
+    <string name="expense_pool_daily">Daily cash</string>
+    <string name="expense_pool_operational">Operational</string>
+    <string name="expense_pool_helper">Daily cash is paid from the drawer, so it lowers the expected cash. Operational is paid some other way and does not.</string>
+    <string name="expense_no_categories">Add an expense category first (Categories, top right of the Cash tab).</string>
+    <string name="expense_cancelled">Cancelled</string>
+    <string name="expense_cancel_title">Cancel this expense?</string>
+    <string name="expense_cancel_message">\"%1$s\" (%2$s) stays in the list, crossed out, and is no longer counted. This can\'t be undone.</string>
+    <string name="expense_cancel_action">Cancel expense</string>
+    <string name="expense_keep">Keep expense</string>
+
+    <!-- Expense categories -->
+    <string name="expense_categories">Categories</string>
+    <string name="expense_categories_empty">No expense categories yet</string>
+    <string name="add_expense_category">Add category</string>
+    <string name="edit_expense_category">Edit category</string>
+    <string name="expense_category_name">Category name</string>
+    <string name="hide_category">Hide category</string>
+    <string name="expense_category_hide_helper_short">Hidden categories no longer show in the expense form.</string>
+    <string name="expense_category_hide_helper">Hidden categories no longer show when you add an expense. Past expenses keep their category. You can bring it back later with \"Show hidden\".</string>
+    <plurals name="hidden_expense_categories_count">
+        <item quantity="one">%1$d hidden category</item>
+        <item quantity="other">%1$d hidden categories</item>
+    </plurals>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_hint">Café name, logo, tax, rounding, colour</string>
+    <string name="settings_section_cafe">Café</string>
+    <string name="settings_section_sales">Sales</string>
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_discard_title">Discard your changes?</string>
+    <string name="settings_discard_message">The changes you made to the settings have not been saved.</string>
+    <string name="store_name">Café name</string>
+    <string name="store_address">Address</string>
+    <string name="receipt_footer">Receipt footer</string>
+    <string name="receipt_footer_hint">Printed at the bottom of the receipt, for example a thank-you line.</string>
+    <string name="choose_logo">Choose logo</string>
+    <string name="change_logo">Change logo</string>
+    <string name="remove_logo">Remove logo</string>
+    <string name="logo_failed">That picture could not be used. Try another one.</string>
+    <string name="tax_switch">Charge tax</string>
+    <string name="tax_switch_hint">Off by default. When on, the tax is added on top of the prices.</string>
+    <string name="tax_percent">Tax rate</string>
+    <string name="tax_invalid">Enter a whole number from 1 to 100.</string>
+    <string name="rounding_step">Round the total up to the nearest</string>
+    <string name="rounding_none">No rounding</string>
+    <string name="rounding_invalid">Enter an amount from 1 to 100.000.</string>
+    <string name="rounding_example">Example: %1$s is charged as %2$s.</string>
+    <string name="rounding_example_none">Example: totals are charged exactly, with no rounding.</string>
+    <string name="accent_title">Accent colour</string>
+    <string name="accent_default">Auto</string>
+    <string name="accent_default_description">Automatic colours</string>
+    <string name="accent_preview">Preview</string>
+    <string name="accent_teal">Teal</string>
+    <string name="accent_blue">Blue</string>
+    <string name="accent_indigo">Indigo</string>
+    <string name="accent_purple">Purple</string>
+    <string name="accent_red">Red</string>
+    <string name="accent_orange">Orange</string>
+    <string name="accent_brown">Brown</string>
+    <string name="accent_green">Green</string>
+
+    <!-- Sales history and voiding -->
+    <string name="tab_sales">Sales</string>
+    <string name="sales_title">Sales</string>
+    <string name="sales_empty">No sales on this day</string>
+    <string name="back">Back</string>
+    <plurals name="sales_count">
+        <item quantity="one">%1$d sale</item>
+        <item quantity="other">%1$d sales</item>
+    </plurals>
+    <plurals name="sales_voided_count">
+        <item quantity="one">%1$d voided sale (not counted)</item>
+        <item quantity="other">%1$d voided sales (not counted)</item>
+    </plurals>
+    <plurals name="sales_cancelled_count">
+        <item quantity="one">%1$d bill cancelled before payment</item>
+        <item quantity="other">%1$d bills cancelled before payment</item>
+    </plurals>
+    <string name="sale_status_paid">Paid</string>
+    <string name="sale_status_voided">Voided</string>
+    <string name="sale_status_cancelled">Cancelled</string>
+    <string name="tax_with_percent">Tax (%1$d%%)</string>
+    <string name="line_discount_percent">%1$d%% off</string>
+    <string name="void_sale">Void sale</string>
+    <string name="void_sale_title">Void this sale?</string>
+    <string name="void_sale_message">The sale stays in the history, marked as voided. It is no longer counted in the day\'s cash, the reports or the totals. This can\'t be undone.</string>
+    <string name="void_reason">Reason (required)</string>
+    <string name="void_failed">Couldn\'t void the sale. Try again.</string>
+    <string name="voided_info_title">Voided</string>
+    <string name="cancelled_info_title">Cancelled before payment</string>
+    <string name="void_reason_line">Reason: %1$s</string>
+    <string name="voided_not_counted">This sale is not counted in the cash, the reports or the totals.</string>
+
+    <!-- Reports and export -->
+    <string name="reports_title">Reports</string>
+    <string name="range_today">Today</string>
+    <string name="range_yesterday">Yesterday</string>
+    <string name="range_this_week">This week</string>
+    <string name="range_this_month">This month</string>
+    <string name="range_custom">Custom</string>
+    <string name="range_from">From: %1$s</string>
+    <string name="range_to">To: %1$s</string>
+    <string name="report_range_span">%1$s – %2$s</string>
+    <string name="report_sales_section">Sales</string>
+    <string name="report_sale_count">Number of sales</string>
+    <string name="report_gross">Sales before discounts</string>
+    <string name="report_total">Total</string>
+    <string name="report_average">Average per sale</string>
+    <string name="report_no_sales">No sales in this range.</string>
+    <string name="report_voided_note">%1$s voided (%2$s), not counted in these numbers.</string>
+    <string name="report_voided_section">Voided sales (not counted)</string>
+    <string name="report_voided_count">%1$d voided</string>
+    <string name="report_expenses_section">Expenses</string>
+    <string name="report_balance">Balance</string>
+    <string name="report_balance_short">Sales minus expenses</string>
+    <string name="report_balance_hint">Only sales and expenses of this range. It is not a profit figure.</string>
+    <string name="report_per_day">By day</string>
+    <string name="report_sales_n">%1$d sales</string>
+    <string name="report_top_products">Top products</string>
+    <string name="report_products_empty">No products sold in this range.</string>
+    <string name="report_products_more_in_csv">Showing the top 10. The Products CSV lists them all.</string>
+    <string name="report_export">Export</string>
+    <string name="export_pdf">PDF report</string>
+    <string name="export_sales_csv">Sales (CSV)</string>
+    <string name="export_products_csv">Products (CSV)</string>
+    <string name="export_expenses_csv">Expenses (CSV)</string>
+    <string name="export_failed">Couldn\'t create the file. Try again.</string>
+    <string name="export_share_title">Share report</string>
+    <string name="report_pdf_title">Sales report</string>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.albertsalendah.cafecashier.data.ProductImageStore
 import com.albertsalendah.cafecashier.data.db.AppDatabase
+import com.albertsalendah.cafecashier.data.db.DEFAULT_EXPENSE_CATEGORIES
 import com.albertsalendah.cafecashier.data.db.Settings
 import com.albertsalendah.cafecashier.ui.order.OrderDraftHolder
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +29,11 @@ class CafeCashierApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        // Make sure the single Settings row (id 1) exists. Does nothing if it is already there.
-        appScope.launch { database.settingsDao().insertIfAbsent(Settings()) }
+        appScope.launch {
+            // Make sure the single Settings row (id 1) exists. Does nothing if it is already there.
+            database.settingsDao().insertIfAbsent(Settings())
+            // First run only: add the default expense categories. Does nothing once the table has any row.
+            database.expenseCategoryDao().seedIfEmpty(DEFAULT_EXPENSE_CATEGORIES)
+        }
     }
 }

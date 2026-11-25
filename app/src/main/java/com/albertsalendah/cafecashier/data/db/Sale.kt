@@ -69,6 +69,31 @@ interface SaleDao {
     )
     suspend fun sumCashPaidBetween(fromMillis: Long, toMillis: Long): Long
 
+    // Sales history for one span (a day, or a report range): everything that was paid in it, whether it
+    // is still PAID or was voided later (CANCELLED with a paidAt), plus bills that were cancelled
+    // without ever being paid (placed by their cancel time). Newest first.
+    @Query(
+        "SELECT * FROM sale WHERE " +
+            "(paidAt IS NOT NULL AND status IN ('PAID', 'CANCELLED') AND paidAt >= :fromMillis AND paidAt < :toMillis) " +
+            "OR (status = 'CANCELLED' AND paidAt IS NULL AND cancelledAt >= :fromMillis AND cancelledAt < :toMillis) " +
+            "ORDER BY COALESCE(paidAt, cancelledAt) DESC, id DESC"
+    )
+    fun observeHistoryBetween(fromMillis: Long, toMillis: Long): Flow<List<Sale>>
+
+    // Sales that were paid in the span and voided afterwards. Reports list them apart from the totals.
+    @Query(
+        "SELECT * FROM sale WHERE status = 'CANCELLED' AND paidAt IS NOT NULL " +
+            "AND paidAt >= :fromMillis AND paidAt < :toMillis ORDER BY paidAt"
+    )
+    fun observeVoidedBetween(fromMillis: Long, toMillis: Long): Flow<List<Sale>>
+
+    // Same sum as above, but live: the Cash tab's closing view updates when a payment comes in.
+    @Query(
+        "SELECT COALESCE(SUM(total), 0) FROM sale " +
+            "WHERE status = 'PAID' AND paymentMethod = 'CASH' AND paidAt >= :fromMillis AND paidAt < :toMillis"
+    )
+    fun observeCashPaidTotal(fromMillis: Long, toMillis: Long): Flow<Long>
+
     @Insert
     suspend fun insert(sale: Sale): Long
 

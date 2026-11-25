@@ -39,6 +39,11 @@ class CartViewModel(
             calculateSale(emptyList(), null, 0, 1L)
         )
 
+    // The tax rate shown next to the tax amount: "Tax (10%)". Same settings row the amounts use.
+    val taxPercent: StateFlow<Int> = settingsDao.observe()
+        .map { it?.taxPercent ?: 0 }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
+
     // One-shot messages for a snackbar: the string resource to show.
     private val _messages = MutableSharedFlow<Int>(extraBufferCapacity = 1)
     val messages: SharedFlow<Int> = _messages.asSharedFlow()

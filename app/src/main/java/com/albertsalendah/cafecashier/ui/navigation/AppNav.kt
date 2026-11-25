@@ -6,6 +6,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.albertsalendah.cafecashier.ui.cash.category.ExpenseCategoryListScreen
 import com.albertsalendah.cafecashier.ui.home.HomeScreen
 import com.albertsalendah.cafecashier.ui.menu.addon.AddOnListScreen
 import com.albertsalendah.cafecashier.ui.menu.category.CategoryListScreen
@@ -14,6 +15,9 @@ import com.albertsalendah.cafecashier.ui.menu.product.ProductEditScreen
 import com.albertsalendah.cafecashier.ui.menu.product.ProductListScreen
 import com.albertsalendah.cafecashier.ui.order.CartScreen
 import com.albertsalendah.cafecashier.ui.order.CheckoutScreen
+import com.albertsalendah.cafecashier.ui.reports.ReportsScreen
+import com.albertsalendah.cafecashier.ui.sales.SaleDetailScreen
+import com.albertsalendah.cafecashier.ui.settings.SettingsScreen
 
 @Composable
 fun AppNav() {
@@ -35,10 +39,14 @@ fun AppNav() {
             entry<Home> {
                 HomeScreen(
                     onOpenCart = { backStack.add(Cart) },
+                    onOpenExpenseCategories = { backStack.add(ExpenseCategoryList) },
+                    onOpenSale = { saleId -> backStack.add(SaleDetail(saleId)) },
+                    onOpenReports = { backStack.add(Reports) },
                     onOpenCategories = { backStack.add(CategoryList) },
                     onOpenProducts = { backStack.add(ProductList) },
                     onOpenAddOns = { backStack.add(AddOnList) },
-                    onOpenOrderDiscounts = { backStack.add(OrderDiscountList) }
+                    onOpenOrderDiscounts = { backStack.add(OrderDiscountList) },
+                    onOpenSettings = { backStack.add(Settings) }
                 )
             }
             entry<Cart> {
@@ -53,11 +61,23 @@ fun AppNav() {
                     onDone = { popToHome() }
                 )
             }
+            entry<SaleDetail> { key ->
+                SaleDetailScreen(saleId = key.saleId, onBack = { backStack.removeLastOrNull() })
+            }
+            entry<Reports> {
+                ReportsScreen(onBack = { backStack.removeLastOrNull() })
+            }
+            entry<Settings> {
+                SettingsScreen(onDone = { backStack.removeLastOrNull() })
+            }
             entry<AddOnList> {
                 AddOnListScreen()
             }
             entry<OrderDiscountList> {
                 OrderDiscountListScreen()
+            }
+            entry<ExpenseCategoryList> {
+                ExpenseCategoryListScreen()
             }
             entry<CategoryList> {
                 CategoryListScreen()

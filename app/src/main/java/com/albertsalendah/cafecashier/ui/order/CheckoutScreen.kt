@@ -60,6 +60,7 @@ fun CheckoutScreen(onBack: () -> Unit, onDone: () -> Unit) {
     val viewModel = viewModel<CheckoutViewModel>(factory = appViewModelFactory())
     val draft by viewModel.draft.collectAsStateWithLifecycle()
     val amounts by viewModel.amounts.collectAsStateWithLifecycle()
+    val taxPercent by viewModel.taxPercent.collectAsStateWithLifecycle()
     val discounts by viewModel.discounts.collectAsStateWithLifecycle()
     val selectedDiscountId by viewModel.selectedDiscountId.collectAsStateWithLifecycle()
     val cashText by viewModel.cashText.collectAsStateWithLifecycle()
@@ -136,7 +137,7 @@ fun CheckoutScreen(onBack: () -> Unit, onDone: () -> Unit) {
                         )
                     }
                     if (amounts.taxAmount > 0) {
-                        AmountRow(stringResource(R.string.tax), formatRupiah(amounts.taxAmount))
+                        AmountRow(stringResource(R.string.tax_with_percent, taxPercent), formatRupiah(amounts.taxAmount))
                     }
                     if (amounts.rounding != 0L) {
                         AmountRow(stringResource(R.string.rounding), formatRupiah(amounts.rounding))

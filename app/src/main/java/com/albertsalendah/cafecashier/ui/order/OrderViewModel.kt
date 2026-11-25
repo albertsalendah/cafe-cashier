@@ -7,6 +7,7 @@ import com.albertsalendah.cafecashier.data.db.CategoryDao
 import com.albertsalendah.cafecashier.data.db.OrderType
 import com.albertsalendah.cafecashier.data.db.Product
 import com.albertsalendah.cafecashier.data.db.ProductDao
+import com.albertsalendah.cafecashier.data.db.Settings
 import com.albertsalendah.cafecashier.data.db.SettingsDao
 import com.albertsalendah.cafecashier.domain.OrderDraft
 import com.albertsalendah.cafecashier.domain.SaleAmounts
@@ -52,6 +53,10 @@ class OrderViewModel(
         .flatMapLatest { id ->
             if (id == null) flowOf(emptyList()) else productDao.observeActiveByCategory(id)
         }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    // The café name and logo for the top bar; null while loading.
+    val settings: StateFlow<Settings?> = settingsDao.observe()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     val draft: StateFlow<OrderDraft> = holder.draft
