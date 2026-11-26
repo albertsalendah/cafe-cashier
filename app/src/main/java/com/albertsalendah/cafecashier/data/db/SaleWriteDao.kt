@@ -50,13 +50,22 @@ abstract class SaleWriteDao {
         return sale.id
     }
 
-    // Cancels an open bill: status CANCELLED with the reason and time. Its lines and amounts stay
-    // as they were last saved. Returns false (nothing changed) if the sale is not open.
+    // Cancels an open bill: status CANCELLED with the reason and time (and who did it, if known).
+    // Its lines and amounts stay as they were last saved. Returns false (nothing changed) if the
+    // sale is not open.
     @Transaction
-    open suspend fun cancelOpenSale(saleId: Long, reason: String, now: Long): Boolean {
+    open suspend fun cancelOpenSale(saleId: Long, reason: String, now: Long, by: Actor? = null): Boolean {
         val existing = getSale(saleId) ?: return false
         if (existing.status != SaleStatus.OPEN) return false
-        updateSale(existing.copy(status = SaleStatus.CANCELLED, cancelledAt = now, cancelReason = reason))
+        updateSale(
+            existing.copy(
+                status = SaleStatus.CANCELLED,
+                cancelledAt = now,
+                cancelReason = reason,
+                cancelledById = by?.id,
+                cancelledByName = by?.name
+            )
+        )
         return true
     }
 
@@ -65,10 +74,18 @@ abstract class SaleWriteDao {
     // paid. Every sum only counts PAID sales, so it drops out of the cash and the reports by itself.
     // Returns false (nothing changed) if the sale is not PAID, so a second tap can't void it twice.
     @Transaction
-    open suspend fun voidPaidSale(saleId: Long, reason: String, now: Long): Boolean {
+    open suspend fun voidPaidSale(saleId: Long, reason: String, now: Long, by: Actor? = null): Boolean {
         val existing = getSale(saleId) ?: return false
         if (existing.status != SaleStatus.PAID) return false
-        updateSale(existing.copy(status = SaleStatus.CANCELLED, cancelledAt = now, cancelReason = reason))
+        updateSale(
+            existing.copy(
+                status = SaleStatus.CANCELLED,
+                cancelledAt = now,
+                cancelReason = reason,
+                cancelledById = by?.id,
+                cancelledByName = by?.name
+            )
+        )
         return true
     }
 }

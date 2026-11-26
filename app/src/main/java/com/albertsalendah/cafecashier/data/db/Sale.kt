@@ -43,7 +43,16 @@ data class Sale(
     val taxPercent: Int = 0,                // whole percent, snapshot of the setting at sale time
     val taxAmount: Long = 0,
     val rounding: Long = 0,
-    val total: Long = 0
+    val total: Long = 0,
+
+    // Who handled the sale (only when staff accounts are on; otherwise all null). The name is saved as
+    // it was at that moment, so renaming or deactivating a user never changes history.
+    val createdById: Long? = null,
+    val createdByName: String? = null,
+    val paidById: Long? = null,
+    val paidByName: String? = null,
+    val cancelledById: Long? = null,          // who cancelled the open bill, or voided the paid sale
+    val cancelledByName: String? = null
 )
 
 // No delete: a wrong sale is cancelled (status CANCELLED + reason) and stays in the history.

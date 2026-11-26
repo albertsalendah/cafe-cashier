@@ -1,5 +1,6 @@
 package com.albertsalendah.cafecashier.data.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Entity
 import androidx.room.Insert
@@ -19,8 +20,15 @@ data class Settings(
     val roundingStep: Long = 100,          // rupiah, rounds the final total up
     val logoPath: String? = null,
     val accentColor: Int? = null,          // ARGB
+    // Unused since staff accounts (app_user) replaced the single PIN; kept so the schema stays as it was.
     val pinHash: String? = null,
-    val pinSalt: String? = null            // needed to verify the salted PIN hash
+    val pinSalt: String? = null,
+
+    // Staff accounts: off = the app opens straight away, as before.
+    @ColumnInfo(defaultValue = "0") val accountsEnabled: Boolean = false,
+    // The Admin's recovery code, as a salted hash (the code itself is shown once and never stored).
+    val recoveryHash: String? = null,
+    val recoverySalt: String? = null
 )
 
 @Dao

@@ -14,9 +14,10 @@ import androidx.room.RoomDatabase
         SaleItem::class,
         DailyCash::class,
         ExpenseCategory::class,
-        Expense::class
+        Expense::class,
+        AppUser::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -31,4 +32,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun dailyCashDao(): DailyCashDao
     abstract fun expenseCategoryDao(): ExpenseCategoryDao
     abstract fun expenseDao(): ExpenseDao
+    abstract fun appUserDao(): AppUserDao
+    abstract fun accountsDao(): AccountsDao
 }

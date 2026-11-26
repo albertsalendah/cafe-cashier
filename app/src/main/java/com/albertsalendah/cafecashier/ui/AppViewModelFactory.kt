@@ -20,6 +20,7 @@ import com.albertsalendah.cafecashier.ui.order.OrderViewModel
 import com.albertsalendah.cafecashier.ui.reports.ReportsViewModel
 import com.albertsalendah.cafecashier.ui.sales.SalesViewModel
 import com.albertsalendah.cafecashier.ui.settings.SettingsViewModel
+import com.albertsalendah.cafecashier.ui.users.StaffAccountsViewModel
 
 // Manual dependency wiring (no Hilt): every ViewModel is built from the app's single database.
 // Add one branch per new ViewModel that needs no screen arguments. A ViewModel that needs an
@@ -101,6 +102,13 @@ class AppViewModelFactory(private val app: CafeCashierApp) : ViewModelProvider.F
 
         modelClass.isAssignableFrom(BackupViewModel::class.java) ->
             BackupViewModel(app.backupManager) as T
+
+        modelClass.isAssignableFrom(StaffAccountsViewModel::class.java) ->
+            StaffAccountsViewModel(
+                app.database.settingsDao(),
+                app.database.appUserDao(),
+                app.database.accountsDao()
+            ) as T
 
         else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
     }

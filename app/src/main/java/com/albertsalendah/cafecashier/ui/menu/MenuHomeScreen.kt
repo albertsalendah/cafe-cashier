@@ -23,7 +23,8 @@ fun MenuHomeScreen(
     onOpenAddOns: () -> Unit,
     onOpenOrderDiscounts: () -> Unit,
     onOpenSettings: () -> Unit,
-    onOpenBackup: () -> Unit
+    onOpenBackup: () -> Unit,
+    onOpenStaffAccounts: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -61,6 +62,12 @@ fun MenuHomeScreen(
                 headlineContent = { Text(stringResource(R.string.backup_title)) },
                 supportingContent = { Text(stringResource(R.string.backup_menu_hint)) },
                 modifier = Modifier.clickable(onClick = onOpenBackup)
+            )
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.staff_accounts_title)) },
+                supportingContent = { Text(stringResource(R.string.staff_accounts_menu_hint)) },
+                modifier = Modifier.clickable(onClick = onOpenStaffAccounts)
             )
             HorizontalDivider()
         }

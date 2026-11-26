@@ -19,6 +19,7 @@ import com.albertsalendah.cafecashier.ui.order.CheckoutScreen
 import com.albertsalendah.cafecashier.ui.reports.ReportsScreen
 import com.albertsalendah.cafecashier.ui.sales.SaleDetailScreen
 import com.albertsalendah.cafecashier.ui.settings.SettingsScreen
+import com.albertsalendah.cafecashier.ui.users.StaffAccountsScreen
 
 @Composable
 fun AppNav() {
@@ -48,7 +49,8 @@ fun AppNav() {
                     onOpenAddOns = { backStack.add(AddOnList) },
                     onOpenOrderDiscounts = { backStack.add(OrderDiscountList) },
                     onOpenSettings = { backStack.add(Settings) },
-                    onOpenBackup = { backStack.add(BackupRestore) }
+                    onOpenBackup = { backStack.add(BackupRestore) },
+                    onOpenStaffAccounts = { backStack.add(StaffAccounts) }
                 )
             }
             entry<Cart> {
@@ -74,6 +76,9 @@ fun AppNav() {
             }
             entry<BackupRestore> {
                 BackupScreen(onBack = { backStack.removeLastOrNull() })
+            }
+            entry<StaffAccounts> {
+                StaffAccountsScreen(onBack = { backStack.removeLastOrNull() })
             }
             entry<AddOnList> {
                 AddOnListScreen()

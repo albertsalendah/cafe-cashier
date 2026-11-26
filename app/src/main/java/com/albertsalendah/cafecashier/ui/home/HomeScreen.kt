@@ -52,7 +52,8 @@ fun HomeScreen(
     onOpenAddOns: () -> Unit,
     onOpenOrderDiscounts: () -> Unit,
     onOpenSettings: () -> Unit,
-    onOpenBackup: () -> Unit
+    onOpenBackup: () -> Unit,
+    onOpenStaffAccounts: () -> Unit
 ) {
     var tab by rememberSaveable { mutableStateOf(HomeTab.ORDER) }
 
@@ -83,7 +84,8 @@ fun HomeScreen(
                     onOpenAddOns = onOpenAddOns,
                     onOpenOrderDiscounts = onOpenOrderDiscounts,
                     onOpenSettings = onOpenSettings,
-                    onOpenBackup = onOpenBackup
+                    onOpenBackup = onOpenBackup,
+                    onOpenStaffAccounts = onOpenStaffAccounts
                 )
             }
         }

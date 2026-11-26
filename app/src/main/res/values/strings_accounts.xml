@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Staff accounts (Menu > Staff accounts). -->
+    <string name="staff_accounts_title">Staff accounts</string>
+    <string name="staff_accounts_menu_hint">PIN sign-in, staff and who handled each bill</string>
+    <string name="use_staff_accounts">Use staff accounts</string>
+    <string name="staff_accounts_explain_off">Everyone uses the app without signing in.</string>
+    <string name="staff_accounts_explain_on">Each person signs in with their own PIN. Staff can only take orders and work with bills; the Admin can do everything.</string>
+    <string name="users_section">Users</string>
+    <string name="user_role_admin">Admin</string>
+    <string name="user_role_staff">Staff</string>
+    <string name="user_role_deactivated">%1$s · deactivated</string>
+    <string name="add_user">Add user</string>
+    <string name="new_recovery_code">New recovery code</string>
+
+    <string name="accounts_setup_title">Set up the Admin</string>
+    <string name="accounts_setup_intro">This is the owner\'s account (the Admin). Choose a name and a PIN of 4 to 6 digits. A recovery code follows, for the day the PIN is forgotten.</string>
+    <string name="accounts_setup_failed">Couldn\'t set up staff accounts. Try again.</string>
+    <string name="user_dialog_add_title">Add user</string>
+    <string name="user_dialog_edit_title">Edit user</string>
+    <string name="user_name">Name</string>
+    <string name="user_pin">PIN (4 to 6 digits)</string>
+    <string name="user_pin_again">Repeat the PIN</string>
+    <string name="user_set_new_pin">Set a new PIN</string>
+    <string name="user_error_name">Enter a name of up to 30 characters.</string>
+    <string name="user_error_name_taken">Another user already has this name.</string>
+    <string name="user_error_pin">The PIN must be 4 to 6 digits.</string>
+    <string name="user_error_pin_mismatch">The two PINs are different.</string>
+    <string name="user_error_last_admin">There must be at least one active Admin.</string>
+    <string name="deactivate_user">Deactivate this user</string>
+    <string name="deactivate_help">A deactivated user can\'t sign in. Their old sales keep their name.</string>
+    <string name="reactivate_user">Reactivate</string>
+    <string name="user_deactivated_info">This user is deactivated and can\'t sign in.</string>
+
+    <string name="admin_pin_title">Enter an Admin PIN</string>
+    <string name="admin_pin_turn_off">Turning staff accounts off needs an Admin PIN.</string>
+    <string name="admin_pin_new_code">A new recovery code needs an Admin PIN. The old code stops working.</string>
+    <string name="pin_wrong">Wrong PIN.</string>
+    <string name="pin_locked">Too many wrong tries. Try again in %1$d seconds.</string>
+
+    <string name="recovery_title">Your recovery code</string>
+    <string name="recovery_explain">If the Admin PIN is forgotten, this code is the way back in. Write it down or send it to yourself, and keep it away from the café device. It is shown only once.</string>
+    <string name="recovery_share">Share</string>
+    <string name="recovery_saved">I have saved it</string>
+    <string name="recovery_share_title">Share the recovery code</string>
+    <string name="recovery_share_text">Cafe Cashier recovery code: %1$s\nKeep it private. It lets you set a new Admin PIN.</string>
+</resources>

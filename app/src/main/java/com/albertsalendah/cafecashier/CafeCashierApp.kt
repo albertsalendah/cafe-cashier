@@ -8,6 +8,7 @@ import com.albertsalendah.cafecashier.data.DATABASE_FILE_NAME
 import com.albertsalendah.cafecashier.data.ProductImageStore
 import com.albertsalendah.cafecashier.data.db.AppDatabase
 import com.albertsalendah.cafecashier.data.db.DEFAULT_EXPENSE_CATEGORIES
+import com.albertsalendah.cafecashier.data.db.MIGRATION_1_2
 import com.albertsalendah.cafecashier.data.db.Settings
 import com.albertsalendah.cafecashier.domain.RestoreOutcome
 import com.albertsalendah.cafecashier.domain.applyStagedRestore
@@ -22,7 +23,9 @@ class CafeCashierApp : Application() {
 
     // Created once, on first use. No destructive-migration fallback: the data belongs to the café.
     val database: AppDatabase by lazy {
-        Room.databaseBuilder(this, AppDatabase::class.java, DATABASE_FILE_NAME).build()
+        Room.databaseBuilder(this, AppDatabase::class.java, DATABASE_FILE_NAME)
+            .addMigrations(MIGRATION_1_2)
+            .build()
     }
 
     // Product photos live in the app's own storage; see ProductImageStore.
