@@ -10,6 +10,7 @@ room = "2.8.5"
 navigation3 = "1.2.1"
 coil = "3.6.3"
 exifinterface = "1.4.2"
+processPhoenix = "3.0.0"
 kotlinxSerialization = "1.12.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -28,6 +29,7 @@ androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigat
 androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
+process-phoenix = { group = "com.jakewharton", name = "process-phoenix", version.ref = "processPhoenix" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

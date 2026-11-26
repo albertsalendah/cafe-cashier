@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Backup and restore. restore_done / restore_failed_kept are shown at app start after a restore. -->
+    <string name="restore_done">Backup restored</string>
+    <string name="restore_failed_kept">Restore failed. Your previous data was kept.</string>
+
+    <string name="backup_title">Backup &amp; restore</string>
+    <string name="backup_menu_hint">Save a copy of all data, or bring one back</string>
+
+    <string name="backup_section_backup">Back up</string>
+    <string name="backup_explain">Saves everything (sales, menu, settings and photos) into one file. Keep a copy somewhere safe, such as Google Drive or a computer. Anyone who has the file can read your sales.</string>
+    <string name="backup_last">Last backup: %1$s</string>
+    <string name="backup_never">No backup has been made on this phone yet.</string>
+    <string name="backup_now">Back up now</string>
+    <string name="backup_saved">Backup saved</string>
+    <string name="backup_failed">Couldn\'t save the backup. Try again.</string>
+
+    <string name="backup_section_restore">Restore</string>
+    <string name="backup_restore_explain">Replaces everything on this phone with the data from a backup file. Use it after changing phones or if something went wrong.</string>
+    <string name="backup_restore_pick">Restore from a backup file</string>
+    <string name="backup_confirm_title">Restore this backup?</string>
+    <string name="backup_confirm_message">Backup made on %1$s.\n\nEverything on this phone (sales, menu, settings and photos) will be replaced by what is in this backup. This can\'t be undone, so make a backup of the current data first if you might need it.\n\nThe app restarts when the restore is ready.</string>
+    <string name="backup_confirm_action">Restore and restart</string>
+    <string name="backup_not_a_backup">That file is not a backup from this app.</string>
+    <string name="backup_newer_app">That backup was made by a newer version of the app. Update the app first.</string>
+    <string name="backup_unreadable">Couldn\'t read that file. Try again.</string>
+    <string name="backup_working">Working…</string>
+    <string name="backup_restarting">Restoring… the app will restart.</string>
+</resources>

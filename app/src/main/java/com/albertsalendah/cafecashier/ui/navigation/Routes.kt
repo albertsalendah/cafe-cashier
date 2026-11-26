@@ -35,6 +35,9 @@ data object Settings : NavKey
 @Serializable
 data object Reports : NavKey
 
+@Serializable
+data object BackupRestore : NavKey
+
 // One sale of the history, in full (and where a paid sale can be voided).
 @Serializable
 data class SaleDetail(val saleId: Long) : NavKey

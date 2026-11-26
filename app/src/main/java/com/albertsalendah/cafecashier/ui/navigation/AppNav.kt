@@ -6,6 +6,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.albertsalendah.cafecashier.ui.backup.BackupScreen
 import com.albertsalendah.cafecashier.ui.cash.category.ExpenseCategoryListScreen
 import com.albertsalendah.cafecashier.ui.home.HomeScreen
 import com.albertsalendah.cafecashier.ui.menu.addon.AddOnListScreen
@@ -46,7 +47,8 @@ fun AppNav() {
                     onOpenProducts = { backStack.add(ProductList) },
                     onOpenAddOns = { backStack.add(AddOnList) },
                     onOpenOrderDiscounts = { backStack.add(OrderDiscountList) },
-                    onOpenSettings = { backStack.add(Settings) }
+                    onOpenSettings = { backStack.add(Settings) },
+                    onOpenBackup = { backStack.add(BackupRestore) }
                 )
             }
             entry<Cart> {
@@ -69,6 +71,9 @@ fun AppNav() {
             }
             entry<Settings> {
                 SettingsScreen(onDone = { backStack.removeLastOrNull() })
+            }
+            entry<BackupRestore> {
+                BackupScreen(onBack = { backStack.removeLastOrNull() })
             }
             entry<AddOnList> {
                 AddOnListScreen()

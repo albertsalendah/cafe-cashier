@@ -8,7 +8,7 @@ import androidx.room.Update
 
 // Writes a sale together with its lines, all or nothing. An abstract class (not an interface like
 // SaleDao) so that saveSale and cancelOpenSale can be @Transaction methods with a body, the same
-// pattern as MenuSeedDao. Adding this DAO does not change the database schema.
+// pattern as ExpenseCategoryDao. Adding this DAO does not change the database schema.
 @Dao
 abstract class SaleWriteDao {
 

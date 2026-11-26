@@ -20,7 +20,7 @@ import java.util.UUID
 // phone with full-size camera pictures, and the picture keeps working if the original is deleted.
 class ProductImageStore(private val context: Context) {
 
-    private val dir: File get() = File(context.filesDir, "product_images")
+    val dir: File get() = File(context.filesDir, "product_images")
 
     fun fileFor(name: String): File = File(dir, name)
 

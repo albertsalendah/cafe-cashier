@@ -31,7 +31,7 @@ val DEFAULT_EXPENSE_CATEGORIES = listOf(
 )
 
 // An abstract class (not an interface like the simpler DAOs) so that seedIfEmpty can be a
-// @Transaction method with a body, the same pattern as MenuSeedDao and SaleWriteDao.
+// @Transaction method with a body, the same pattern as SaleWriteDao.
 // Expense categories are never deleted: hiding = update with archived = true.
 @Dao
 abstract class ExpenseCategoryDao {
