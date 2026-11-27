@@ -5,14 +5,17 @@ import android.widget.Toast
 import androidx.room.Room
 import com.albertsalendah.cafecashier.data.BackupManager
 import com.albertsalendah.cafecashier.data.DATABASE_FILE_NAME
+import com.albertsalendah.cafecashier.data.PrefsAttemptStore
 import com.albertsalendah.cafecashier.data.ProductImageStore
 import com.albertsalendah.cafecashier.data.db.AppDatabase
 import com.albertsalendah.cafecashier.data.db.DEFAULT_EXPENSE_CATEGORIES
 import com.albertsalendah.cafecashier.data.db.MIGRATION_1_2
 import com.albertsalendah.cafecashier.data.db.Settings
+import com.albertsalendah.cafecashier.domain.PinAttempts
 import com.albertsalendah.cafecashier.domain.RestoreOutcome
 import com.albertsalendah.cafecashier.domain.applyStagedRestore
 import com.albertsalendah.cafecashier.ui.order.OrderDraftHolder
+import com.albertsalendah.cafecashier.ui.session.SessionHolder
 import com.jakewharton.processphoenix.ProcessPhoenix
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +39,17 @@ class CafeCashierApp : Application() {
 
     // The order being taken (in memory only), shared by the Order screen, the cart and the checkout.
     val orderDraftHolder: OrderDraftHolder = OrderDraftHolder()
+
+    // Who is signed in while staff accounts are on (in memory only). When another person signs in,
+    // the order in progress is thrown away.
+    val session: SessionHolder by lazy {
+        SessionHolder(database.settingsDao(), database.appUserDao()) { orderDraftHolder.clear() }
+    }
+
+    // Wrong-PIN counters for the lock screen, kept in SharedPreferences so killing the app does not reset them.
+    val pinAttempts: PinAttempts by lazy {
+        PinAttempts(PrefsAttemptStore(this)) { System.currentTimeMillis() }
+    }
 
     private val appScope =CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -66,7 +80,11 @@ class CafeCashierApp : Application() {
             imagesDir = imageStore.dir
         )
         when (outcome) {
-            RestoreOutcome.RESTORED -> Toast.makeText(this, R.string.restore_done, Toast.LENGTH_LONG).show()
+            RestoreOutcome.RESTORED -> {
+                // The restored users may have other ids: start the wrong-PIN counters again.
+                pinAttempts.clearAll()
+                Toast.makeText(this, R.string.restore_done, Toast.LENGTH_LONG).show()
+            }
             RestoreOutcome.FAILED -> Toast.makeText(this, R.string.restore_failed_kept, Toast.LENGTH_LONG).show()
             RestoreOutcome.NOTHING_PENDING -> Unit
         }

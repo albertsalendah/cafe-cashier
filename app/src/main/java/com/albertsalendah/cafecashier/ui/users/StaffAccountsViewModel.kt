@@ -23,12 +23,14 @@ import com.albertsalendah.cafecashier.domain.isUserNameTaken
 import com.albertsalendah.cafecashier.domain.normalizeRecoveryCode
 import com.albertsalendah.cafecashier.domain.remainingLockoutMillis
 import com.albertsalendah.cafecashier.domain.verifySecret
+import com.albertsalendah.cafecashier.ui.session.SessionHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -54,12 +56,14 @@ private class Hashed(val hash: String, val salt: String)
 // The Staff accounts screen: the on/off switch, the list of users, adding and editing them, and a
 // new recovery code. Turning accounts ON for the first time creates the Admin and shows the recovery
 // code once; turning them OFF (and a new recovery code) asks for an Admin PIN. Hashing runs off the
-// main thread. Locking the app and the role limits come in the next step; this screen only manages
-// the data.
+// main thread. Only an Admin reaches this screen once accounts are on (the Menu tab is hidden from
+// staff); this class also keeps the session in step: the new Admin stays signed in after setup, and
+// turning accounts off ends the session.
 class StaffAccountsViewModel(
     private val settingsDao: SettingsDao,
     private val appUserDao: AppUserDao,
-    private val accountsDao: AccountsDao
+    private val accountsDao: AccountsDao,
+    private val session: SessionHolder
 ) : ViewModel() {
 
     // Null until the first read.
@@ -88,6 +92,10 @@ class StaffAccountsViewModel(
     private var failedPins = 0
     private var lastPinFailureAt = 0L
 
+    // Set from the moment the first Admin is created until the recovery code was saved: that Admin
+    // is then signed in, so the lock screen does not cut in while the one-time code is on screen.
+    private var pendingAdminName: String? = null
+
     // ---- the switch ----
 
     fun onSwitchToggled(on: Boolean) {
@@ -98,8 +106,11 @@ class StaffAccountsViewModel(
         } else if (users.value.isNullOrEmpty()) {
             dialog = AccountsDialog.Setup
         } else {
-            // Users exist from an earlier time: just switch back on.
-            viewModelScope.launch { setEnabled(true) }
+            // Users exist from an earlier time: just switch back on (the lock screen appears at once).
+            viewModelScope.launch {
+                session.reset()
+                setEnabled(true)
+            }
         }
     }
 
@@ -117,6 +128,8 @@ class StaffAccountsViewModel(
         if (error != null) return
         val cleanName = cleanUserName(name) ?: return
         busy = true
+        session.holdForSetup(true)
+        pendingAdminName = cleanName
         viewModelScope.launch {
             val code = generateRecoveryCode()
             val pinHash = hashed(pin)
@@ -131,6 +144,8 @@ class StaffAccountsViewModel(
             if (ok) {
                 dialog = AccountsDialog.RecoveryCode(code)
             } else {
+                pendingAdminName = null
+                session.holdForSetup(false)
                 dialog = null
                 _messages.emit(R.string.accounts_setup_failed)
             }
@@ -172,7 +187,9 @@ class StaffAccountsViewModel(
             pinWrong = false
             when (current.action) {
                 AdminAction.TURN_OFF -> {
+                    // Off first (the app opens), then forget who was signed in.
                     setEnabled(false)
+                    session.reset()
                     dialog = null
                 }
 
@@ -196,6 +213,16 @@ class StaffAccountsViewModel(
 
     fun onRecoveryCodeSaved() {
         dialog = null
+        // After the first setup the new Admin carries on signed in. (A later "new recovery code" has no
+        // pending Admin: whoever is signed in stays signed in.)
+        val adminName = pendingAdminName ?: return
+        pendingAdminName = null
+        viewModelScope.launch {
+            val admin = appUserDao.observeActive().first()
+                .firstOrNull { it.role == UserRole.ADMIN && it.name == adminName }
+            if (admin != null) session.signIn(admin.id)
+            session.holdForSetup(false)
+        }
     }
 
     // ---- users ----
@@ -292,6 +319,12 @@ class StaffAccountsViewModel(
         formError = null
         pinWrong = false
         pinLockedSeconds = 0
+    }
+
+    // Leaving the screen before the code was saved cannot happen through the dialog, but never leave
+    // the app held open: the next sign-in then needs the PIN.
+    override fun onCleared() {
+        if (pendingAdminName != null) session.holdForSetup(false)
     }
 
     // Salted hash, computed off the main thread (it is deliberately slow).

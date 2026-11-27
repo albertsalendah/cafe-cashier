@@ -10,6 +10,7 @@ import com.albertsalendah.cafecashier.ui.backup.BackupViewModel
 import com.albertsalendah.cafecashier.ui.bills.BillsViewModel
 import com.albertsalendah.cafecashier.ui.cash.CashViewModel
 import com.albertsalendah.cafecashier.ui.cash.category.ExpenseCategoryListViewModel
+import com.albertsalendah.cafecashier.ui.lock.LockViewModel
 import com.albertsalendah.cafecashier.ui.menu.addon.AddOnListViewModel
 import com.albertsalendah.cafecashier.ui.menu.category.CategoryListViewModel
 import com.albertsalendah.cafecashier.ui.menu.discount.OrderDiscountListViewModel
@@ -107,7 +108,16 @@ class AppViewModelFactory(private val app: CafeCashierApp) : ViewModelProvider.F
             StaffAccountsViewModel(
                 app.database.settingsDao(),
                 app.database.appUserDao(),
-                app.database.accountsDao()
+                app.database.accountsDao(),
+                app.session
+            ) as T
+
+        modelClass.isAssignableFrom(LockViewModel::class.java) ->
+            LockViewModel(
+                app.database.settingsDao(),
+                app.database.appUserDao(),
+                app.session,
+                app.pinAttempts
             ) as T
 
         else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")

@@ -51,8 +51,8 @@ import com.albertsalendah.cafecashier.domain.UserFormError
 import com.albertsalendah.cafecashier.domain.UserRole
 import com.albertsalendah.cafecashier.ui.appViewModelFactory
 
-// Menu > Staff accounts: the on/off switch, the users, and the recovery code. Admin only once the
-// app is locked (next step); for now it only manages the data.
+// Menu > Staff accounts: the on/off switch, the users, and the recovery code. Only an Admin gets here
+// once accounts are on: staff do not see the Menu tab (HomeScreen).
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StaffAccountsScreen(onBack: () -> Unit) {

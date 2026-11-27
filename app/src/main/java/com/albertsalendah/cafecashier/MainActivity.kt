@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.albertsalendah.cafecashier.ui.navigation.AppNav
+import com.albertsalendah.cafecashier.ui.session.AppGate
 import com.albertsalendah.cafecashier.ui.theme.CafeCashierTheme
 import kotlinx.coroutines.flow.map
 
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 .collectAsStateWithLifecycle(initialValue = null)
             accent?.let { state ->
                 CafeCashierTheme(accentColor = state.argb) {
-                    AppNav()
+                    AppGate()
                 }
             }
         }

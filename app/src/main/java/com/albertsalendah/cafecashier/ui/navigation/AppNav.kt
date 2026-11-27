@@ -6,6 +6,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.albertsalendah.cafecashier.domain.UserSummary
 import com.albertsalendah.cafecashier.ui.backup.BackupScreen
 import com.albertsalendah.cafecashier.ui.cash.category.ExpenseCategoryListScreen
 import com.albertsalendah.cafecashier.ui.home.HomeScreen
@@ -21,8 +22,10 @@ import com.albertsalendah.cafecashier.ui.sales.SaleDetailScreen
 import com.albertsalendah.cafecashier.ui.settings.SettingsScreen
 import com.albertsalendah.cafecashier.ui.users.StaffAccountsScreen
 
+// [currentUser] is the signed-in user, or null while staff accounts are off (then everything is open).
+// [onLock] is the Lock button on the Home screen. The whole stack is rebuilt by AppGate when the role changes.
 @Composable
-fun AppNav() {
+fun AppNav(currentUser: UserSummary?, onLock: () -> Unit) {
     val backStack = rememberNavBackStack(Home)
     // Back to the Home screen, whatever is on top (Home is always the first entry). Safe to call twice.
     val popToHome = {
@@ -40,6 +43,8 @@ fun AppNav() {
         entryProvider = entryProvider {
             entry<Home> {
                 HomeScreen(
+                    currentUser = currentUser,
+                    onLock = onLock,
                     onOpenCart = { backStack.add(Cart) },
                     onOpenExpenseCategories = { backStack.add(ExpenseCategoryList) },
                     onOpenSale = { saleId -> backStack.add(SaleDetail(saleId)) },

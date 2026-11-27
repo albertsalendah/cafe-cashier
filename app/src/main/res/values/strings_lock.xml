@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Lock screen, Lock button and "Forgot PIN?" (staff accounts). -->
+    <string name="lock_title">Who is signing in?</string>
+    <string name="lock_enter_pin">Enter the PIN for %1$s</string>
+    <string name="lock_pin_label">PIN</string>
+    <string name="lock_sign_in">Sign in</string>
+    <string name="lock_other_name">Choose another name</string>
+    <string name="lock_forgot_pin">Forgot PIN?</string>
+    <string name="lock_no_users">There are no active users to sign in.</string>
+    <string name="lock_button">Lock</string>
+    <string name="session_user_line">%1$s · %2$s</string>
+
+    <string name="recovery_enter_title">Enter the recovery code</string>
+    <string name="recovery_enter_help">Type the 10-character recovery code that was shown when staff accounts were set up. Then you can choose a new PIN.</string>
+    <string name="recovery_code_label">Recovery code</string>
+    <string name="recovery_code_wrong">That code is not right.</string>
+    <string name="recovery_continue">Continue</string>
+    <string name="recovery_new_pin_title">Choose a new PIN</string>
+    <string name="recovery_new_pin_help">Choose a new PIN for %1$s. You will be signed in right away.</string>
+    <string name="recovery_failed">Couldn\'t set the new PIN. Try again.</string>
+</resources>
