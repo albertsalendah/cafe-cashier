@@ -117,7 +117,8 @@ class AppViewModelFactory(private val app: CafeCashierApp) : ViewModelProvider.F
                 app.database.settingsDao(),
                 app.database.appUserDao(),
                 app.session,
-                app.pinAttempts
+                app.pinAttempts,
+                app.lastUserStore
             ) as T
 
         else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")

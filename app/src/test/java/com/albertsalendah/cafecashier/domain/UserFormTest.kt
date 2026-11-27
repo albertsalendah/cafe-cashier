@@ -13,7 +13,7 @@ class UserFormTest {
 
     @Test
     fun aGoodNewUserPasses() {
-        assertNull(checkUserForm("Dewi", UserRole.STAFF, "4821", "4821", users, null))
+        assertNull(checkUserForm("Dewi", UserRole.STAFF, "482193", "482193", users, null))
     }
 
     @Test
@@ -23,31 +23,34 @@ class UserFormTest {
 
     @Test
     fun aBlankOrTooLongNameIsRefused() {
-        assertEquals(UserFormError.NAME_INVALID, checkUserForm("  ", UserRole.STAFF, "4821", "4821", users, null))
-        assertEquals(UserFormError.NAME_INVALID, checkUserForm("x".repeat(31), UserRole.STAFF, "4821", "4821", users, null))
+        assertEquals(UserFormError.NAME_INVALID, checkUserForm("  ", UserRole.STAFF, "482193", "482193", users, null))
+        assertEquals(UserFormError.NAME_INVALID, checkUserForm("x".repeat(31), UserRole.STAFF, "482193", "482193", users, null))
     }
 
     @Test
     fun aNameUsedByAnotherActiveUserIsRefusedIgnoringCase() {
-        assertEquals(UserFormError.NAME_TAKEN, checkUserForm(" sari ", UserRole.STAFF, "4821", "4821", users, null))
+        assertEquals(UserFormError.NAME_TAKEN, checkUserForm(" sari ", UserRole.STAFF, "482193", "482193", users, null))
     }
 
     @Test
     fun aDeactivatedUsersNameMayBeUsedAgain() {
-        assertNull(checkUserForm("Budi", UserRole.STAFF, "4821", "4821", users, null))
+        assertNull(checkUserForm("Budi", UserRole.STAFF, "482193", "482193", users, null))
     }
 
     @Test
     fun aBadPinIsRefused() {
         assertEquals(UserFormError.PIN_INVALID, checkUserForm("Dewi", UserRole.STAFF, "12", "12", users, null))
+        assertEquals(UserFormError.PIN_INVALID, checkUserForm("Dewi", UserRole.STAFF, "1234", "1234", users, null))   // too short now
+        assertEquals(UserFormError.PIN_INVALID, checkUserForm("Dewi", UserRole.STAFF, "12345", "12345", users, null))
+        assertEquals(UserFormError.PIN_INVALID, checkUserForm("Dewi", UserRole.STAFF, "1234567", "1234567", users, null))
         assertEquals(UserFormError.PIN_INVALID, checkUserForm("Dewi", UserRole.STAFF, "", "", users, null))
-        assertEquals(UserFormError.PIN_INVALID, checkUserForm("Dewi", UserRole.STAFF, "12ab", "12ab", users, null))
+        assertEquals(UserFormError.PIN_INVALID, checkUserForm("Dewi", UserRole.STAFF, "12ab56", "12ab56", users, null))
     }
 
     @Test
     fun twoDifferentPinsAreRefused() {
-        assertEquals(UserFormError.PIN_MISMATCH, checkUserForm("Dewi", UserRole.STAFF, "4821", "4822", users, null))
-        assertEquals(UserFormError.PIN_MISMATCH, checkUserForm("Dewi", UserRole.STAFF, "4821", null, users, null))
+        assertEquals(UserFormError.PIN_MISMATCH, checkUserForm("Dewi", UserRole.STAFF, "482193", "482194", users, null))
+        assertEquals(UserFormError.PIN_MISMATCH, checkUserForm("Dewi", UserRole.STAFF, "482193", null, users, null))
     }
 
     @Test

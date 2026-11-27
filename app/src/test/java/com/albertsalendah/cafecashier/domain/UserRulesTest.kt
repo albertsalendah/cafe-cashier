@@ -33,21 +33,21 @@ class UserRulesTest {
     // ---- PIN format ----
 
     @Test
-    fun aPinIsFourToSixDigits() {
-        assertTrue(isValidPin("1234"))
+    fun aPinIsExactlySixDigits() {
         assertTrue(isValidPin("123456"))
-        assertTrue(isValidPin("0000"))
-        assertFalse(isValidPin("123"))
+        assertTrue(isValidPin("000000"))
+        assertFalse(isValidPin("1234"))
+        assertFalse(isValidPin("12345"))
         assertFalse(isValidPin("1234567"))
         assertFalse(isValidPin(""))
     }
 
     @Test
     fun aPinWithAnythingButAsciiDigitsIsRefused() {
-        assertFalse(isValidPin("12a4"))
-        assertFalse(isValidPin(" 1234"))
-        assertFalse(isValidPin("12 34"))
-        assertFalse(isValidPin("١٢٣٤")) // Arabic-Indic digits
+        assertFalse(isValidPin("12a456"))
+        assertFalse(isValidPin(" 12345"))
+        assertFalse(isValidPin("123 45"))
+        assertFalse(isValidPin("١٢٣٤٥٦")) // Arabic-Indic digits
     }
 
     // ---- hashing ----

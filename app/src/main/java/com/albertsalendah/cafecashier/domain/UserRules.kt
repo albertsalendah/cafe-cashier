@@ -10,7 +10,7 @@ import javax.crypto.spec.PBEKeySpec
 // who may open what, PIN format and hashing, the recovery code, wrong-PIN lockout, and the
 // rules for editing the list of users.
 //
-// Honest limit: a 4 to 6 digit PIN can always be guessed offline from a copied database file,
+// Honest limit: a 6 digit PIN can always be guessed offline from a copied database file,
 // whatever the hashing. The lock keeps casual users out; it is not a vault.
 
 enum class UserRole { ADMIN, STAFF }
@@ -41,12 +41,14 @@ fun canAccess(role: UserRole, area: AppArea): Boolean =
 
 // ---- PIN ----
 
-const val PIN_MIN_LENGTH = 4
-const val PIN_MAX_LENGTH = 6
+// A PIN is exactly 6 digits (the lock screen has six boxes and signs in on the sixth digit).
+const val PIN_LENGTH = 6
+const val PIN_MIN_LENGTH = PIN_LENGTH
+const val PIN_MAX_LENGTH = PIN_LENGTH
 
-/** 4 to 6 characters, ASCII digits only. */
+/** Exactly 6 characters, ASCII digits only. */
 fun isValidPin(pin: String): Boolean =
-    pin.length in PIN_MIN_LENGTH..PIN_MAX_LENGTH && pin.all { it in '0'..'9' }
+    pin.length == PIN_LENGTH && pin.all { it in '0'..'9' }
 
 // ---- hashing (PIN and recovery code) ----
 

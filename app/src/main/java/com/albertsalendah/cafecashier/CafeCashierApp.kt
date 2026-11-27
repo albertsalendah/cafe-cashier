@@ -5,7 +5,9 @@ import android.widget.Toast
 import androidx.room.Room
 import com.albertsalendah.cafecashier.data.BackupManager
 import com.albertsalendah.cafecashier.data.DATABASE_FILE_NAME
+import com.albertsalendah.cafecashier.data.LastUserStore
 import com.albertsalendah.cafecashier.data.PrefsAttemptStore
+import com.albertsalendah.cafecashier.data.PrefsLastUserStore
 import com.albertsalendah.cafecashier.data.ProductImageStore
 import com.albertsalendah.cafecashier.data.db.AppDatabase
 import com.albertsalendah.cafecashier.data.db.DEFAULT_EXPENSE_CATEGORIES
@@ -45,6 +47,9 @@ class CafeCashierApp : Application() {
     val session: SessionHolder by lazy {
         SessionHolder(database.settingsDao(), database.appUserDao()) { orderDraftHolder.clear() }
     }
+
+    // Who signed in last (the lock screen preselects them).
+    val lastUserStore: LastUserStore by lazy { PrefsLastUserStore(this) }
 
     // Wrong-PIN counters for the lock screen, kept in SharedPreferences so killing the app does not reset them.
     val pinAttempts: PinAttempts by lazy {

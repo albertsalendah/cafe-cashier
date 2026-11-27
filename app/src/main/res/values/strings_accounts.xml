@@ -14,17 +14,17 @@
     <string name="new_recovery_code">New recovery code</string>
 
     <string name="accounts_setup_title">Set up the Admin</string>
-    <string name="accounts_setup_intro">This is the owner\'s account (the Admin). Choose a name and a PIN of 4 to 6 digits. A recovery code follows, for the day the PIN is forgotten.</string>
+    <string name="accounts_setup_intro">This is the owner\'s account (the Admin). Choose a name and a 6-digit PIN. A recovery code follows, for the day the PIN is forgotten.</string>
     <string name="accounts_setup_failed">Couldn\'t set up staff accounts. Try again.</string>
     <string name="user_dialog_add_title">Add user</string>
     <string name="user_dialog_edit_title">Edit user</string>
     <string name="user_name">Name</string>
-    <string name="user_pin">PIN (4 to 6 digits)</string>
+    <string name="user_pin">PIN (6 digits)</string>
     <string name="user_pin_again">Repeat the PIN</string>
     <string name="user_set_new_pin">Set a new PIN</string>
     <string name="user_error_name">Enter a name of up to 30 characters.</string>
     <string name="user_error_name_taken">Another user already has this name.</string>
-    <string name="user_error_pin">The PIN must be 4 to 6 digits.</string>
+    <string name="user_error_pin">The PIN must be 6 digits.</string>
     <string name="user_error_pin_mismatch">The two PINs are different.</string>
     <string name="user_error_last_admin">There must be at least one active Admin.</string>
     <string name="deactivate_user">Deactivate this user</string>

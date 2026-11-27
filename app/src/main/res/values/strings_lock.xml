@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Lock screen, Lock button and "Forgot PIN?" (staff accounts). -->
-    <string name="lock_title">Who is signing in?</string>
-    <string name="lock_enter_pin">Enter the PIN for %1$s</string>
-    <string name="lock_pin_label">PIN</string>
-    <string name="lock_sign_in">Sign in</string>
-    <string name="lock_other_name">Choose another name</string>
+    <string name="lock_who_label">Signing in as</string>
+    <string name="lock_enter_pin">Enter your PIN</string>
+    <string name="lock_pin_progress">%1$d of %2$d digits entered</string>
+    <string name="lock_delete_digit">Delete the last digit</string>
     <string name="lock_forgot_pin">Forgot PIN?</string>
     <string name="lock_no_users">There are no active users to sign in.</string>
     <string name="lock_button">Lock</string>

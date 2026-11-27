@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.albertsalendah.cafecashier.data.LastUserStore
 import com.albertsalendah.cafecashier.data.db.AppUser
 import com.albertsalendah.cafecashier.data.db.AppUserDao
 import com.albertsalendah.cafecashier.data.db.SettingsDao
@@ -33,13 +34,17 @@ enum class RecoveryStep { CODE, NEW_PIN }
 
 enum class RecoveryError { WRONG_CODE, PIN_INVALID, PIN_MISMATCH, FAILED }
 
+/** The café's name and logo file name (as saved in Settings), shown above the sign-in. */
+data class LockBranding(val name: String, val logoName: String?)
+
 private sealed interface TryResult {
     data object Ok : TryResult
     data class Locked(val waitMillis: Long) : TryResult
     data class Wrong(val waitMillis: Long) : TryResult
 }
 
-// The lock screen: tap a name, enter the PIN. Wrong tries are counted per user and survive the app
+// The lock screen: pick your name from the dropdown (the last person who signed in is preselected),
+// then type the 6-digit PIN; it signs in on the sixth digit. Wrong tries are counted per user and survive the app
 // being killed (PinAttempts), with the waiting times of lockoutSeconds(). "Forgot PIN?" is for an
 // Admin with the recovery code, then a new PIN; a staff PIN is reset by an Admin on the Staff accounts
 // screen. PINs and codes are only passed in as arguments, never kept here. Hashing and the attempt
@@ -49,12 +54,13 @@ class LockViewModel(
     private val settingsDao: SettingsDao,
     private val appUserDao: AppUserDao,
     private val session: SessionHolder,
-    private val attempts: PinAttempts
+    private val attempts: PinAttempts,
+    private val lastUser: LastUserStore
 ) : ViewModel() {
 
-    val storeName: StateFlow<String> = settingsDao.observe()
-        .map { it?.storeName.orEmpty() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+    val branding: StateFlow<LockBranding> = settingsDao.observe()
+        .map { LockBranding(it?.storeName?.trim().orEmpty(), it?.logoPath) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LockBranding("", null))
 
     // Only users who may sign in. Null until the first read.
     val users: StateFlow<List<AppUser>?> = appUserDao.observeActive()
@@ -67,7 +73,7 @@ class LockViewModel(
     var lockedSeconds by mutableStateOf(0L)
         private set
 
-    // Goes up after every wrong try, so the screen can clear the field it is showing.
+    // Goes up after every refused try (wrong, or refused during a wait), so the screen can clear the PIN it is showing.
     var failureCount by mutableStateOf(0)
         private set
     var busy by mutableStateOf(false)
@@ -92,18 +98,27 @@ class LockViewModel(
 
     // ---- sign in ----
 
+    /**
+     * The list of users who may sign in was read (or changed). Keeps the selected user if they are
+     * still in it, otherwise picks the one who signed in last, otherwise the first.
+     */
+    fun onUsersLoaded(users: List<AppUser>) {
+        if (users.any { it.id == selectedId }) return
+        val pick = users.firstOrNull { it.id == lastUser.get() } ?: users.firstOrNull()
+        selectedId = pick?.id
+        pinWrong = false
+        // A recovery in progress belonged to the user who is gone.
+        recovery = null
+        recoveryError = null
+        recoveryVerified = false
+        if (pick != null) refreshLock(attemptKeyForUser(pick.id)) else lockedSeconds = 0
+    }
+
     fun onSelect(user: AppUser) {
-        if (busy) return
+        if (busy || user.id == selectedId) return
         selectedId = user.id
         pinWrong = false
         refreshLock(attemptKeyForUser(user.id))
-    }
-
-    fun onBackToNames() {
-        if (busy) return
-        selectedId = null
-        pinWrong = false
-        lockedSeconds = 0
     }
 
     fun onSignIn(user: AppUser, pin: String) {
@@ -135,11 +150,13 @@ class LockViewModel(
                     pinWrong = false
                     lockedSeconds = 0
                     selectedId = null
+                    lastUser.set(fresh.id)
                     session.signIn(fresh.id)
                 }
 
                 is TryResult.Locked -> {
                     pinWrong = false
+                    failureCount++
                     lockedSeconds = waitSeconds(result.waitMillis)
                 }
 
@@ -251,6 +268,7 @@ class LockViewModel(
             pinWrong = false
             lockedSeconds = 0
             selectedId = null
+            lastUser.set(fresh.id)
             session.signIn(fresh.id)
             busy = false
         }
